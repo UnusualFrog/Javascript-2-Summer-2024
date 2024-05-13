@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
     <title>A01</title>
 </head>
 
@@ -38,10 +40,13 @@
         <label for="CargoWeight">Cargo Weight: </label>
         <input type="text" id="CargoWeight" name="CargoWeight">
         <br><br>
-
-        <button>Process Cargo</button>
-        <button>Reset Form</button>
+        
+        <button id="processCargo">Process Cargo</button>
+        <button id="resetForm">Reset Form</button>
     </form>
+
+    <script src="process_cargo.js"></script> 
 </body>
+
 
 </html>
