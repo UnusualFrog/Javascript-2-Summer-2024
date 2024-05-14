@@ -1,22 +1,25 @@
+// Steps 1,2 & 3 Create and add label
+const generateTable = () => {
+    if ($("h3").length == 0){
+        let headerLbl = "<h3>Cargo Box Car Manifest for Box Car XXXXX</h3>";
+        headerLbl = headerLbl.substring(0,headerLbl.indexOf("XXXXX"));
+        headerLbl += $("#BoxCarID").val();
+        $("body").append(headerLbl);
 
-// Steps 1 & 2 Create and add label
-let headerLbl = "<h3>Cargo Box Car Manifest for Box Car XXXXX</h3>";
-headerLbl = headerLbl.substring(0,headerLbl.indexOf("XXXXX"));
-headerLbl += $("#BoxCarID").val();
-document.write(headerLbl);
+        let table = "<table id=\"BoxCarTable\">";
+        table += "<tr><th>Transport ID</th><th>Description</th><th>Weight</th></tr>";
+        table += "<tr id=\"0\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
+        table += "<tr id=\"1\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
+        table += "<tr id=\"2\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
+        table += "<tr id=\"3\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
+        table += "<tr id=\"4\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
+        table += "<tr><td>Total Cargo Weight:</td><td id=\"totalCargoWeight\">XXXXX</td></tr>";
+        table += "</table>";
+        $("body").append(table);
+    }
+}
 
-//Step 3 Create and add Table
-document.write("<table>");
-document.write("<tr><th>Transport ID</th><th>Description</th><th>Weight</th></tr>");
-document.write("<tr id=\"0\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>");
-document.write("<tr id=\"1\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>");
-document.write("<tr id=\"2\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>");
-document.write("<tr id=\"3\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>");
-document.write("<tr id=\"4\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>");
-document.write("<tr><td>Total Cargo Weight:</td><td id=\"totalCargoWeight\">XXXXX</td></tr>")
-document.write("</table>");
-
-// Used to track current table row index
+// Global variable used to track current table row index
 var tableRowIndex = 0;
 
 // Add data to table and update weight values
@@ -55,10 +58,11 @@ const resetForm = () => {
     $("#CargoWeight").val("");
 };
 
-// Attach event listeners to process and reset buttons
+// Attach event listeners to process and reset buttons on page load
 $("document").ready( () => {
-    console.log("Ready!")
-    
+    console.log("Ready!");
+
+    $("#processCargoBtn").click(generateTable);
     $("#processCargoBtn").click(processCargo);
     $("#resetFormBtn").click(resetForm);
 });
