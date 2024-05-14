@@ -1,41 +1,31 @@
-// Steps 1,2 & 3 Create and add label
+// Steps 1,2 & 3 Create and add label and table
 const generateTable = () => {
     if ($("h3").length == 0){
+        // Header Label creation
         let headerLbl = "<h3>Cargo Box Car Manifest for Box Car XXXXX</h3>";
         headerLbl = headerLbl.substring(0,headerLbl.indexOf("XXXXX"));
         headerLbl += $("#BoxCarID").val();
         $("body").append(headerLbl);
 
+        // Table row headers and summary row created
         let table = "<table id=\"BoxCarTable\">";
-        table += "<tr><th>Transport ID</th><th>Description</th><th>Weight</th></tr>";
-        table += "<tr id=\"0\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
-        table += "<tr id=\"1\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
-        table += "<tr id=\"2\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
-        table += "<tr id=\"3\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
-        table += "<tr id=\"4\"><td class=\"transportID\">XXXXX</td><td class=\"description\">XXXXX</td><td class=\"weight\">XXXXX</td></tr>";
-        table += "<tr><td>Total Cargo Weight:</td><td id=\"totalCargoWeight\">XXXXX</td></tr>";
+        table += "<tr id=\"HeaderRow\"><th>Transport ID</th><th>Description</th><th>Weight</th></tr>";
+        table += "<tr id=\"SummaryRow\"><td>Total Cargo Weight:</td><td id=\"totalCargoWeight\">XXXXX</td></tr>";
         table += "</table>";
         $("body").append(table);
     }
 }
 
-// Global variable used to track current table row index
-var tableRowIndex = 0;
-
-// Add data to table and update weight values
+// Adds data to table and updates weight values
 const processCargo = () => {
+    // Retrieve cargo data
     const transportID = $("#TransportID").val();
     const description = $("#Description").val();
     const cargoWeight = $("#CargoWeight").val();
 
-    const currentTransportID = $("tr#" + tableRowIndex + " > td.transportID");
-    currentTransportID.text(transportID);
-
-    const currentDescription = $("tr#" + tableRowIndex + " > td.description");
-    currentDescription.text(description);
-
-    const currentCargoWeight = $("tr#" + tableRowIndex + " > td.weight");
-    currentCargoWeight.text(cargoWeight);
+    // Add row to table with cargo data
+    let row = `<tr id=\"0\"><td class=\"transportID\">${transportID}</td><td class=\"description\">${description}</td><td class=\"weight\">${cargoWeight}</td></tr>`;
+    $(row).insertBefore($("#SummaryRow"));
 
     // Update weight values
     let totalCargoWeight = 0;
@@ -47,8 +37,6 @@ const processCargo = () => {
     }
     $("#totalCargoWeight").text(totalCargoWeight);
     $("#TotalWeight").val( parseFloat($("#EmptyWeight").val()) + totalCargoWeight);
-
-    tableRowIndex++;
 };
 
 // Clear data
