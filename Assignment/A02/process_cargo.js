@@ -23,20 +23,40 @@ const processCargo = () => {
     const description = $("#Description").val();
     const cargoWeight = $("#CargoWeight").val();
 
-    // Add row to table with cargo data
-    let row = `<tr id=\"0\"><td class=\"transportID\">${transportID}</td><td class=\"description\">${description}</td><td class=\"weight\">${cargoWeight}</td></tr>`;
-    $(row).insertBefore($("#SummaryRow"));
-
-    // Update weight values
-    let totalCargoWeight = 0;
-    if ($("#totalCargoWeight").text() == "XXXXX"){
-        totalCargoWeight = parseFloat(cargoWeight);
+    // Check for blank values
+    if (transportID == ""){
+        alert("Transport ID must not be blank");
+    }
+    else if (description == ""){
+        alert("Description must not be blank");
+    }
+    else if (cargoWeight == ""){
+        alert("Cargo Weight must not be blank");
+    }
+    else if (typeof cargoWeight === "number"){
+        alert("Cargo Weight must be a numeric value");
     }
     else {
-        totalCargoWeight = parseFloat($("#totalCargoWeight").text()) + parseFloat(cargoWeight);
+        generateTable();
+
+        // Add row to table with cargo data
+        let row = `<tr id=\"0\"><td class=\"transportID\">${transportID}</td><td class=\"description\">${description}</td><td class=\"weight\">${cargoWeight}</td></tr>`;
+        $(row).insertBefore($("#SummaryRow"));
+
+        // Update weight values
+        let totalCargoWeight = 0;
+        if ($("#totalCargoWeight").text() == "XXXXX"){
+            totalCargoWeight = parseFloat(cargoWeight);
+        }
+        else {
+            totalCargoWeight = parseFloat($("#totalCargoWeight").text()) + parseFloat(cargoWeight);
+        }
+        $("#totalCargoWeight").text(totalCargoWeight);
+        $("#TotalWeight").val( parseFloat($("#EmptyWeight").val()) + totalCargoWeight);
     }
-    $("#totalCargoWeight").text(totalCargoWeight);
-    $("#TotalWeight").val( parseFloat($("#EmptyWeight").val()) + totalCargoWeight);
+
+
+    
 };
 
 // Clear data
@@ -50,7 +70,7 @@ const resetForm = () => {
 $("document").ready( () => {
     console.log("Ready!");
 
-    $("#processCargoBtn").click(generateTable);
+    //$("#processCargoBtn").click(generateTable);
     $("#processCargoBtn").click(processCargo);
     $("#resetFormBtn").click(resetForm);
 });
