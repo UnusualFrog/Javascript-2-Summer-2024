@@ -68,7 +68,7 @@ const processCargo = () => {
         }
         
         let totalCurrentWeight = parseFloat($("#EmptyWeight").val()) + totalCargoWeight
-        $("#CurrentWeight").val(totalCurrentWeight);
+        
 
         // Set cargo status based on max weight
         if (totalCurrentWeight > $("#MaxWeight").val()) {
@@ -78,6 +78,7 @@ const processCargo = () => {
             let manifestRow = `<tr><td class=\"transportID\">${transportID}</td><td class=\"description\">${description}</td><td class=\"weight\">${cargoWeight}</td></tr>`;
             $(manifestRow).insertBefore($("#SummaryRow"));
             $("#totalCargoWeight").text(totalCargoWeight);  
+            $("#CurrentWeight").val(totalCurrentWeight);
         }   
 
         // Add rows to table with cargo data
