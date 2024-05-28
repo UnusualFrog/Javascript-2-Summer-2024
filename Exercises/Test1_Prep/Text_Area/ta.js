@@ -62,12 +62,18 @@ const processData = () => {
 
 const upperTextArea = () => {
     let lines = $("#ta_id").value.split("\n");
-    console.log(lines);
 
     for(let i in lines) {
         lines[i] = lines[i].toUpperCase();
     }
-    console.log(lines);
+
+    $("#ta_id").textContent = "";
+
+    for(let line of lines) {
+        $("#ta_id").append(`${line}`);
+        $("#ta_id").append("\n");
+    }
+    $("#ta_id").textContent = $("#ta_id").textContent.substring(0,$("#ta_id").textContent.length - 1);
 }
 
 // Clear input field values
