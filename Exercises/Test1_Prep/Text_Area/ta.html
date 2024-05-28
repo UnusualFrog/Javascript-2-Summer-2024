@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text Area Demo</title>
+    <link rel="stylesheet" href="ta.css">
+</head>
+<body>
+    <main>
+        <h1>Text Area Demo</h1>
+        <div>
+            <label for="data1_id">Data1</label>
+            <input type="text" id="data1_id">
+            <span id="span1_id"></span>
+            <br><br>
+
+            <label for="data2_id">Data2</label>
+            <input type="text" id="data2_id">
+            <span id="span2_id"></span>
+            <br><br>
+
+            <label for="data3_id">Data3</label>
+            <input type="text" id="data3_id" disabled>
+            <span id="span3_id"></span>
+            <br><br>
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="button" id="process_button_id" value="Process">
+            <input type="button" id="reset_button_id" value="Reset">
+            <input type="button" id="upper_button_id" value="Upper">
+        </div>
+        <textarea id="ta_id">Output</textarea>
+    </main>
+    <script src="ta.js"></script>   
+</body>
+
+</html>
