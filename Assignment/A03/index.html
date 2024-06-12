@@ -20,7 +20,7 @@
 
             <div>
                 <label for="battery_power_id">Battery Power %:</label>
-                <input type="text" id="battery_power_id" class="backgroundlb" name="battery_power_id" value="0"
+                <input type="text" id="battery_power_id" class="backgroundlb" name="battery_power_id" value="0.00"
                     readonly>
             </div>
 
@@ -33,7 +33,6 @@
             <div>
                 <label for="speed_KMM_id">Speed Km//min</label>
                 <input type="text" id="speed_KMM_id" class="backgroundlb" name="speed_KMM_id" value="0.00" readonly>
-                <span></span>
             </div>
 
             <div>
@@ -46,6 +45,7 @@
                 <input type="radio" id="battery_charge_id" class="radio_button" name="battery_status_id" value="Battery Charging" unchecked disabled>
                 <label for="battery_drain_id">Driving</label>
                 <input type="radio" id="battery_drain_id" class="radio_button" name="battery_status_id" value="Battery In Use" unchecked disabled>
+                <span id="battery_mode_id_span"></span>
             </div>
 
             <div>
