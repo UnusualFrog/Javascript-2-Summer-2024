@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="test2.js"></script>
+    <link rel="stylesheet" href="test2.css">
+    <title>Test 2 Prep</title>
+</head>
+
+    <body>
+        <div id="div1">
+            <h1>Gooning Stats</h1>
+            <p>Enter each day's gooning stats and press "y" to accept data</p>
+            <p>After 5 days results will display</p>
+        </div>
+        <hr>
+
+        <div id="div2">
+            <label>Current Day: </label>
+            <input type="text" id="current_day" value="0" disabled>
+            <br><br>
+            <label>Total Minutes Gooning (TTG): </label>
+            <input type="text" id="total_minutes_gooning" value="0" disabled>
+        </div>
+        <hr>
+
+        <div id="div3">
+            <label>Minutes Spent Gooning: </label>
+            <input type="text" id="minutes_gooned">
+            <span id="minutes_gooned_error" class="hidden">Goon time must be a positive number</span>
+            <br><br>
+
+            <label>Goon w/ Jelque (GwJ): </label>
+            <input type="text" id="minutes_gooned_with_jelque" disabled>
+            <br><br>
+
+            <label>Jelque Bonus: </label>
+            <input type="radio" id="jelque_bonus_yes" name="jelque_bonus">
+            <label>No Jelque Bonus: </label>
+            <input type="radio" id="jelque_bonus_no" name="jelque_bonus">
+        </div>
+        <hr>
+
+        <div id="div4" class="hidden">
+            <p>Enter "y" and press "enter" to process data and proceed to next day</p>
+            <input id="process_data" type="text">
+        </div>
+        <hr>
+
+        <div id="div5" class="hidden">
+            <h2>Results</h2>
+        </div>
+    </body>
+
+</html>
