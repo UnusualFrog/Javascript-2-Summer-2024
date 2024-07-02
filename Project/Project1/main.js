@@ -1,3 +1,25 @@
+class Railsystem {
+    constructor() {
+        this.boxcar_list = [];
+        this.data = "data";
+    }
+
+    add_boxcar(new_item) {
+        this.boxcar_list.push(new_item)
+    }
+}
+
+class Boxcar {
+    constructor(id, tare, max_gross, cargo, gross) {
+        this.id = id;
+        this.tare = tare;
+        this.max_gross = max_gross;
+        this.cargo = cargo;
+        this.gross = gross;
+    }
+}
+
+
 const generate_menu_option = (id, text) => {
     let menu_option_row = document.createElement("tr");
     let menu_option_data = document.createElement("td")
@@ -209,16 +231,47 @@ const validate_create_boxcar = () => {
 const process_new_boxcar = () => {
     if ($("#boxcar_id_span").attr("class") == "hidden" && $("#tare_weight_span").attr("class") == "hidden" && $("#max_gross_weight_span").attr("class") == "hidden") {
         console.log("processing");
+        $("#divC").removeClass("hidden");
     }
+    console.log(CNA_Railsystem.data);
 }
 
+// Reset the new boxcar form fields
 const reset_new_boxcar_form = () => {
     $("#boxcar_id").val("");
     $("#tare_weight_id").val("");
     $("#max_gross_weight_id").val("");
+    $("#gross_weight_id").val("0");
     $("#boxcar_id_span").addClass("hidden")
     $("#tare_weight_span").addClass("hidden");
     $("#max_gross_weight_span").addClass("hidden");
+}
+
+const generate_rolling_stock_report_menu = () => {
+    let button_row = document.createElement("tr");
+
+    let return_to_create_data = document.createElement("td");
+    let return_to_create_button = document.createElement("input");
+    return_to_create_button.setAttribute("type","button");
+    return_to_create_button.setAttribute("value","Return to Create Boxcar");
+    return_to_create_button.addEventListener("click", () => {
+        $("#divC").addClass("hidden");
+    });
+    return_to_create_button.addEventListener("click", reset_new_boxcar_form);
+
+    let main_menu_data = document.createElement("td");
+    main_menu_button = document.createElement("input");
+    main_menu_button.setAttribute("type","button");
+    main_menu_button.setAttribute("value","Return to Main Page");
+    main_menu_button.addEventListener("click", toggle_create_boxcar_menu);
+    main_menu_button.addEventListener("click", reset_new_boxcar_form);
+
+
+    return_to_create_data.append(return_to_create_button);
+    main_menu_data.append(main_menu_button);
+    button_row.append(return_to_create_data);
+    button_row.append(main_menu_data);
+    $("#divC tfoot").append(button_row);
 }
 
 // Toggle pages when moving between div a and div b
@@ -226,10 +279,15 @@ const toggle_create_boxcar_menu = (e) => {
     e.target.checked = !e.target.checked;
     $("#divA").toggle();
     $("#divB").toggle();
-    $("#divC").toggle();
+    if ($("#divC").attr("class") == "") {
+        $("#divC").addClass("hidden")
+    }
 }
 
-$(document).ready( () => {
+// Global Railsystem variable
+var CNA_Railsystem = new Railsystem();
+$(document).ready( () => { 
     generate_main_menu();
     generate_create_boxcar_menu();
+    generate_rolling_stock_report_menu();
 });
