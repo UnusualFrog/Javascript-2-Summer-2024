@@ -209,7 +209,7 @@ const generate_create_boxcar_menu = () => {
     button_data.append(reset_form_button);
     button_data.append(main_menu_button);
     button_row.append(button_data);
-    $("#divC tbody").append(button_row);
+    $("#divB tbody").append(button_row);
 }
 
 // Validate input fields for creating a new box car
