@@ -16,9 +16,21 @@ class Boxcar {
         this.max_gross = max_gross;
         this.cargo = cargo;
         this.gross = gross;
+        this.cargo_manifest = [];
     }
+
+    add_freight(new_item) {
+        this.cargo_manifest.push(new_item);
+    }   
 }
 
+class Freight_Item {
+    constructor(transport_id, description, cargo_weight) {
+        this.transport_id = transport_id;
+        this.description = description;
+        this.cargo_weight = cargo_weight;
+    }
+}
 
 const generate_menu_option = (id, text) => {
     let menu_option_row = document.createElement("tr");
@@ -30,7 +42,7 @@ const generate_menu_option = (id, text) => {
     menu_option_button.setAttribute("type", "radio")
     menu_option_button.setAttribute("name", "menu_option")
     menu_option_label.textContent = text;
-    menu_option_label.setAttribute("for", "create_boxcar");
+    menu_option_label.setAttribute("for", id);
 
     menu_option_data.append(menu_option_button);
     menu_option_data.append(menu_option_label);
@@ -197,7 +209,7 @@ const generate_create_boxcar_menu = () => {
     button_data.append(reset_form_button);
     button_data.append(main_menu_button);
     button_row.append(button_data);
-    $("#divB tfoot").append(button_row);
+    $("#divC tbody").append(button_row);
 }
 
 // Validate input fields for creating a new box car
@@ -230,10 +242,33 @@ const validate_create_boxcar = () => {
 // Create new boxcar if valid input
 const process_new_boxcar = () => {
     if ($("#boxcar_id_span").attr("class") == "hidden" && $("#tare_weight_span").attr("class") == "hidden" && $("#max_gross_weight_span").attr("class") == "hidden") {
-        console.log("processing");
         $("#divC").removeClass("hidden");
+
+        let new_boxcar = new Boxcar($("#boxcar_id").val(), $("#tare_weight_id").val(), $("#max_gross_weight_id").val(), $("#cargo_weight_id").val(), $("#gross_weight_id").val());
+        CNA_Railsystem.add_boxcar(new_boxcar);
+
+        let new_boxcar_row = document.createElement("tr");
+        let new_boxcar_id_data = document.createElement("td");
+        new_boxcar_id_data.textContent = $("#boxcar_id").val();
+
+        let new_boxcar_tare_data = document.createElement("td");
+        new_boxcar_tare_data.textContent = $("#tare_weight_id").val();
+
+        let new_boxcar_max_gross_data = document.createElement("td");
+        new_boxcar_max_gross_data.textContent = $("#max_gross_weight_id").val();
+
+        let new_boxcar_cargo_weight_data = document.createElement("td");
+        new_boxcar_cargo_weight_data.textContent = $("#cargo_weight_id").val();
+
+        let new_boxcar_gross_data = document.createElement("td");
+        new_boxcar_gross_data.textContent = $("#gross_weight_id").val();
+
+        new_boxcar_row.append(new_boxcar_id_data);
+        new_boxcar_row.append(new_boxcar_tare_data);
+        new_boxcar_row.append(new_boxcar_max_gross_data);
+        new_boxcar_row.append(new_boxcar_cargo_weight_data);
+        new_boxcar_row.append(new_boxcar_gross_data);
     }
-    console.log(CNA_Railsystem.data);
 }
 
 // Reset the new boxcar form fields
