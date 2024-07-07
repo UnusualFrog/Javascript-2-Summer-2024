@@ -22,3 +22,7 @@ span {
 .hidden {
     display: none;
 }
+
+#boxcar_manifest_title {
+    color: black;
+}

@@ -8,6 +8,15 @@ class Railsystem {
         this.boxcar_list.set(new_item.id, new_item);
     }
 
+    get_total_cargo_weight() {
+        let total_cargo_weight = 0;
+        for (let current_boxcar of this.boxcar_list) {
+            let boxcar_data = current_boxcar[1];
+            total_cargo_weight += boxcar_data.cargo;
+        }
+        return total_cargo_weight;
+    }
+
 }
 
 class Boxcar {
@@ -22,6 +31,14 @@ class Boxcar {
 
     add_freight(new_item) {
         this.cargo_manifest.push(new_item);
+    }
+
+    get_total_cargo_weight() {
+        let total_cargo_weight = 0;
+        for (let cargo of this.cargo_manifest) {
+            total_cargo_weight += cargo.cargo_weight;
+        }
+        return total_cargo_weight;
     }
 }
 
@@ -59,6 +76,7 @@ const generate_main_menu = () => {
     let all_freight_status_row = generate_menu_option("all_freight_status", "All Freight Status");
 
     create_boxcar_row.addEventListener("change", show_create_boxcar_menu);
+    boxcar_data_row.addEventListener("change", show_only_rolling_stock_report);
     add_freight_row.addEventListener("change", show_add_freight_menu);
 
     $("#divA tbody").append(create_boxcar_row);
@@ -278,6 +296,7 @@ const generate_rolling_stock_report_menu = () => {
     let return_to_create_data = document.createElement("td");
     let return_to_create_button = document.createElement("input");
     return_to_create_button.setAttribute("type", "button");
+    return_to_create_button.setAttribute("id", "return_to_create_boxcar");
     return_to_create_button.setAttribute("value", "Return to Create Boxcar");
     return_to_create_button.addEventListener("click", () => {
         $("#divC").addClass("hidden");
@@ -327,6 +346,8 @@ const fill_rolling_stock_report = () => {
 
         $("#divC tbody").append(new_boxcar_row);
     }
+    let total_cargo_weight = CNA_Railsystem.get_total_cargo_weight();
+    $("#divC #total_cargo_footer").text(total_cargo_weight);
 }
 
 const show_create_boxcar_menu = (e) => {
@@ -337,6 +358,7 @@ const show_create_boxcar_menu = (e) => {
         $("#divC").addClass("hidden");
     } else {
         $("#divC").removeClass("hidden");
+        $("#return_to_create_boxcar").removeClass("hidden");
     }
     fill_rolling_stock_report();
 }
@@ -345,6 +367,20 @@ const hide_create_boxcar_menu = () => {
     $("#divA").removeClass("hidden");
     $("#divB").addClass("hidden");
     $("#divC").addClass("hidden");
+}
+
+const show_only_rolling_stock_report = (e) => {
+    e.target.checked = !e.target.checked;
+    $("#divA").addClass("hidden");
+    $("#divC").removeClass("hidden");
+    $("#return_to_create_boxcar").addClass("hidden");
+    fill_rolling_stock_report();
+}
+
+const hide_only_rolling_stock_report = () => {
+    $("#divA").removeClass("hidden");
+    $("#divC").addClass("hidden");
+    $("#return_to_create_boxcar").removeClass("hidden");
 }
 
 const generate_add_freight_menu = () => {
@@ -466,6 +502,7 @@ const generate_add_freight_menu = () => {
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
     main_menu_button.addEventListener("click", hide_add_freight_menu);
+    main_menu_button.addEventListener("click", reset_add_freight_form);
     $("#divD").append(main_menu_button);
 }
 
@@ -489,9 +526,8 @@ const fill_boxcar_selection_list = () => {
 const process_new_freight_cargo = () => {
     if ($("#transport_id_span").attr("class") == "hidden" && $("#description_span").attr("class") && $("#total_cargo_weight_span").attr("class")) {
         let current_boxcar = CNA_Railsystem.boxcar_list.get($("#boxcar_selected").val());
-        let new_freight = new Freight_Item($("#transport_id").val(), $("#description").val(), $("#total_cargo_weight").val())
+        let new_freight = new Freight_Item($("#transport_id").val(), $("#description").val(), parseFloat($("#total_cargo_weight").val()))
         if (parseFloat($("#total_cargo_weight").val()) + current_boxcar.cargo + current_boxcar.tare <= current_boxcar.max_gross){
-            console.log("Added to boxcar");
             current_boxcar.cargo += parseFloat($("#total_cargo_weight").val());
             current_boxcar.gross = current_boxcar.tare + current_boxcar.cargo;
             current_boxcar.add_freight(new_freight);
@@ -499,13 +535,12 @@ const process_new_freight_cargo = () => {
             show_boxcar_manifest();
             hide_warehouse_manifest();
         } else {
-            console.log("Added to warehouse");
             CNA_Railsystem.warehouse_manifest.add_freight(new_freight);
             $("#boxcar_or_warehouse_span").removeClass("hidden");
             show_warehouse_manifest();
             hide_boxcar_manifest();
         }
-        reset_add_freight_form();
+        $("#entry_section").attr("disabled", true);
     }
 }
 
@@ -570,12 +605,58 @@ const hide_add_freight_menu = () => {
     hide_warehouse_manifest();
 }
 
+const generate_boxcar_manifest_menu = () => {
+    return_to_create_freight_button = document.createElement("input");
+    return_to_create_freight_button.setAttribute("type", "button");
+    return_to_create_freight_button.setAttribute("value", "Return to Create Freight Entry");
+    return_to_create_freight_button.addEventListener("click", hide_boxcar_manifest);
+
+    main_menu_button = document.createElement("input");
+    main_menu_button.setAttribute("type", "button");
+    main_menu_button.setAttribute("value", "Return to Main Page");
+    main_menu_button.addEventListener("click", hide_add_freight_menu);
+    
+   $("#divE").append(return_to_create_freight_button);
+   $("#divE").append(main_menu_button);
+}
+
+const fill_current_boxcar_manifest = () => {
+    $("#divE tbody").empty();
+    let current_boxcar = CNA_Railsystem.boxcar_list.get($("#boxcar_selected").val());
+    for (let current_boxcar_data of current_boxcar.cargo_manifest) {
+        let boxcar_row = document.createElement("tr");
+
+        let boxcar_transport_id = document.createElement("td");
+        let boxcar_description = document.createElement("td");
+        let boxcar_cargo_weight = document.createElement("td");
+        
+        boxcar_transport_id.textContent = current_boxcar_data.transport_id;
+        boxcar_description.textContent = current_boxcar_data.description;
+        boxcar_cargo_weight.textContent = current_boxcar_data.cargo_weight;
+
+        
+        boxcar_row.append(boxcar_transport_id);
+        boxcar_row.append(boxcar_description);
+        boxcar_row.append(boxcar_cargo_weight);
+        $("#divE tbody").append(boxcar_row)
+    }
+    $("#divE #total_cargo_footer").text(current_boxcar.get_total_cargo_weight());
+}
+
 const show_boxcar_manifest = () => {
     $("#divE").removeClass("hidden");
+    let current_boxcar = $("#boxcar_selected").val();
+    $("#boxcar_manifest_title").text(current_boxcar);
+    fill_current_boxcar_manifest();
 }
 
 const hide_boxcar_manifest = () => {
     $("#divE").addClass("hidden");
+    reset_add_freight_form();
+}
+
+const generate_warehouse_manifest_menu = () => {
+    
 }
 
 const show_warehouse_manifest = () => {
@@ -586,6 +667,18 @@ const hide_warehouse_manifest = () => {
     $("#divF").addClass("hidden");
 }
 
+const show_all_freight_status_manifest = () => {
+    $("#divG").removeClass("hidden");
+}
+
+const hide_all_freight_status_manifest = () => {
+    $("#divG").addClass("hidden");
+}
+
+const generate_all_freight_status_menu = () => {
+
+}
+
 
 // Global Railsystem variable
 var CNA_Railsystem = new Railsystem();
@@ -594,4 +687,5 @@ $(document).ready(() => {
     generate_create_boxcar_menu();
     generate_rolling_stock_report_menu();
     generate_add_freight_menu();
+    generate_boxcar_manifest_menu();
 });
