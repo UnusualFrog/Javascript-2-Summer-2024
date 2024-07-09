@@ -1,8 +1,10 @@
 // Railsystem which contains and manages all exisiting boxcars and the warehouse
 class Railsystem {
+    // Boxcars are stored as a map with the ID of the boxcar as the key
+    // The warehouse is represented as a boxcar with 0 tare weight and an effectivley unlimited gross weight maximum 
     constructor() {
         this.boxcar_list = new Map;
-        this.warehouse_manifest = new Boxcar("WH000", Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
+        this.warehouse_manifest = new Boxcar("WH000", 0, Number.MAX_VALUE, 0, 0);
     }
 
     // adds a new boxcar to the system
@@ -808,6 +810,8 @@ const hide_all_freight_status_manifest = () => {
 
 // Global Railsystem variable
 var CNA_Railsystem = new Railsystem();
+
+// Generate base page elements for all menus
 $(document).ready(() => {
     generate_main_menu();
     generate_create_boxcar_menu();
