@@ -1,13 +1,16 @@
+// Railsystem which contains and manages all exisiting boxcars and the warehouse
 class Railsystem {
     constructor() {
         this.boxcar_list = new Map;
         this.warehouse_manifest = new Boxcar("WH000", Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
     }
 
+    // adds a new boxcar to the system
     add_boxcar(new_item) {
         this.boxcar_list.set(new_item.id, new_item);
     }
 
+    // calculate the total cargo weight of all boxcars
     get_total_cargo_weight() {
         let total_cargo_weight = 0;
         for (let current_boxcar of this.boxcar_list) {
@@ -19,6 +22,7 @@ class Railsystem {
 
 }
 
+// Boxcar which holds a list of cargo items
 class Boxcar {
     constructor(id, tare, max_gross, cargo, gross) {
         this.id = id;
@@ -29,6 +33,7 @@ class Boxcar {
         this.cargo_manifest = [];
     }
 
+    // Adds a cargo item to the boxcar and sorts the cargo items alphabetically based on the item's transport id
     add_freight(new_item) {
         this.cargo_manifest.push(new_item);
         this.cargo_manifest.sort((a, b) => {
@@ -43,6 +48,7 @@ class Boxcar {
         });
     }
 
+    // calculates the total cargo weight of all cargo items in the boxcar
     get_total_cargo_weight() {
         let total_cargo_weight = 0;
         for (let cargo of this.cargo_manifest) {
@@ -52,6 +58,7 @@ class Boxcar {
     }
 }
 
+// Cargo item
 class Freight_Item {
     constructor(transport_id, description, cargo_weight) {
         this.transport_id = transport_id;
@@ -60,6 +67,8 @@ class Freight_Item {
     }
 }
 
+// ------------ Main Menu Logic ------------ 
+// Generates radio buttons for main menu navigtion
 const generate_menu_option = (id, text) => {
     let menu_option_row = document.createElement("tr");
     let menu_option_data = document.createElement("td")
@@ -78,6 +87,7 @@ const generate_menu_option = (id, text) => {
     return menu_option_row;
 }
 
+// Generate main menu elements, add page navigation listeners, and append to the main menu div
 const generate_main_menu = () => {
     let create_boxcar_row = generate_menu_option("create_boxcar", "Create Boxcar");
     let add_freight_row = generate_menu_option("add_freight", "Add Freight");
@@ -97,6 +107,9 @@ const generate_main_menu = () => {
     $("#divA tbody").append(warehouse_data_row);
     $("#divA tbody").append(all_freight_status_row);
 }
+
+
+// ------------ Create Boxcar Menu Logic ------------ 
 
 const generate_create_boxcar_menu = () => {
     // Boxcar ID
@@ -302,6 +315,27 @@ const reset_new_boxcar_form = () => {
     $("#max_gross_weight_span").addClass("hidden");
 }
 
+const show_create_boxcar_menu = (e) => {
+    e.target.checked = !e.target.checked;
+    $("#divA").addClass("hidden");
+    $("#divB").removeClass("hidden");
+    if (CNA_Railsystem.boxcar_list.size == 0) {
+        $("#divC").addClass("hidden");
+    } else {
+        $("#divC").removeClass("hidden");
+        $("#return_to_create_boxcar").removeClass("hidden");
+    }
+    fill_rolling_stock_report();
+}
+
+const hide_create_boxcar_menu = () => {
+    $("#divA").removeClass("hidden");
+    $("#divB").addClass("hidden");
+    $("#divC").addClass("hidden");
+}
+
+// ------------ Rolling Stock Report Menu Logic ------------ 
+
 const generate_rolling_stock_report_menu = () => {
     let button_row = document.createElement("tr");
 
@@ -360,25 +394,6 @@ const fill_rolling_stock_report = () => {
     }
     let total_cargo_weight = CNA_Railsystem.get_total_cargo_weight();
     $("#divC #total_cargo_footer").text(total_cargo_weight);
-}
-
-const show_create_boxcar_menu = (e) => {
-    e.target.checked = !e.target.checked;
-    $("#divA").addClass("hidden");
-    $("#divB").removeClass("hidden");
-    if (CNA_Railsystem.boxcar_list.size == 0) {
-        $("#divC").addClass("hidden");
-    } else {
-        $("#divC").removeClass("hidden");
-        $("#return_to_create_boxcar").removeClass("hidden");
-    }
-    fill_rolling_stock_report();
-}
-
-const hide_create_boxcar_menu = () => {
-    $("#divA").removeClass("hidden");
-    $("#divB").addClass("hidden");
-    $("#divC").addClass("hidden");
 }
 
 const show_only_rolling_stock_report = (e) => {
@@ -670,6 +685,7 @@ const generate_warehouse_manifest_menu = () => {
     return_to_create_freight_button = document.createElement("input");
     return_to_create_freight_button.setAttribute("type", "button");
     return_to_create_freight_button.setAttribute("value", "Return to Create Freight Entry");
+    return_to_create_freight_button.setAttribute("id", "return_to_create_freight_warehouse");
     return_to_create_freight_button.addEventListener("click", hide_warehouse_manifest);
     return_to_create_freight_button.addEventListener("click", reset_add_freight_form);
 
@@ -709,6 +725,7 @@ const fill_warehouse_manifest = () => {
 const show_warehouse_manifest = (e) => {
     if (!$("#divA").hasClass("hidden")) {
         e.target.checked = !e.target.checked;
+        $("#return_to_create_freight_warehouse").addClass("hidden");
     }
     $("#divF").removeClass("hidden");
     $("#divA").addClass("hidden");
@@ -717,6 +734,7 @@ const show_warehouse_manifest = (e) => {
 
 const hide_warehouse_manifest = () => {
     $("#divF").addClass("hidden");
+    $("#return_to_create_freight_warehouse").removeClass("hidden");
 }
 
 const generate_all_freight_status_menu = () => {
