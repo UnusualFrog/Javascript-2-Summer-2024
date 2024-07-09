@@ -31,6 +31,16 @@ class Boxcar {
 
     add_freight(new_item) {
         this.cargo_manifest.push(new_item);
+        this.cargo_manifest.sort((a, b) => {
+            if (a.transport_id < b.transport_id) {
+                return -1;
+            }
+            if (a.transport_id > b.transport_id) {
+                return 1;
+            }
+            return 0;
+
+        });
     }
 
     get_total_cargo_weight() {
@@ -512,7 +522,7 @@ const fill_boxcar_selection_list = () => {
     $("#boxcar_selection tbody").empty();
     for (let current_boxcar_data of CNA_Railsystem.boxcar_list) {
         let boxcar = current_boxcar_data[1];
-        let boxcar_row = document.createElement("tr"); 
+        let boxcar_row = document.createElement("tr");
         let boxcar_data = document.createElement("td");
         let boxcar_button = document.createElement("input");
         boxcar_button.setAttribute("type", "button")
@@ -529,7 +539,7 @@ const process_new_freight_cargo = () => {
     if ($("#transport_id_span").attr("class") == "hidden" && $("#description_span").attr("class") && $("#total_cargo_weight_span").attr("class")) {
         let current_boxcar = CNA_Railsystem.boxcar_list.get($("#boxcar_selected").val());
         let new_freight = new Freight_Item($("#transport_id").val(), $("#description").val(), parseFloat($("#total_cargo_weight").val()))
-        if (parseFloat($("#total_cargo_weight").val()) + current_boxcar.cargo + current_boxcar.tare <= current_boxcar.max_gross){
+        if (parseFloat($("#total_cargo_weight").val()) + current_boxcar.cargo + current_boxcar.tare <= current_boxcar.max_gross) {
             current_boxcar.cargo += parseFloat($("#total_cargo_weight").val());
             current_boxcar.gross = current_boxcar.tare + current_boxcar.cargo;
             current_boxcar.add_freight(new_freight);
@@ -615,9 +625,9 @@ const generate_boxcar_manifest_menu = () => {
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
     main_menu_button.addEventListener("click", hide_add_freight_menu);
-    
-   $("#divE").append(return_to_create_freight_button);
-   $("#divE").append(main_menu_button);
+
+    $("#divE").append(return_to_create_freight_button);
+    $("#divE").append(main_menu_button);
 }
 
 const fill_current_boxcar_manifest = () => {
@@ -629,12 +639,12 @@ const fill_current_boxcar_manifest = () => {
         let boxcar_transport_id = document.createElement("td");
         let boxcar_description = document.createElement("td");
         let boxcar_cargo_weight = document.createElement("td");
-        
+
         boxcar_transport_id.textContent = current_boxcar_data.transport_id;
         boxcar_description.textContent = current_boxcar_data.description;
         boxcar_cargo_weight.textContent = current_boxcar_data.cargo_weight;
 
-        
+
         boxcar_row.append(boxcar_transport_id);
         boxcar_row.append(boxcar_description);
         boxcar_row.append(boxcar_cargo_weight);
@@ -653,16 +663,23 @@ const show_boxcar_manifest = () => {
 const hide_boxcar_manifest = () => {
     reset_add_freight_form();
     $("#divE").addClass("hidden");
-    
+
 }
 
 const generate_warehouse_manifest_menu = () => {
+    return_to_create_freight_button = document.createElement("input");
+    return_to_create_freight_button.setAttribute("type", "button");
+    return_to_create_freight_button.setAttribute("value", "Return to Create Freight Entry");
+    return_to_create_freight_button.addEventListener("click", hide_warehouse_manifest);
+    return_to_create_freight_button.addEventListener("click", reset_add_freight_form);
+
     main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
     main_menu_button.addEventListener("click", hide_add_freight_menu);
-    
-   $("#divF").append(main_menu_button);
+
+    $("#divF").append(return_to_create_freight_button);
+    $("#divF").append(main_menu_button);
 }
 
 const fill_warehouse_manifest = () => {
@@ -675,12 +692,12 @@ const fill_warehouse_manifest = () => {
         let boxcar_transport_id = document.createElement("td");
         let boxcar_description = document.createElement("td");
         let boxcar_cargo_weight = document.createElement("td");
-        
+
         boxcar_transport_id.textContent = current_warehouse_data.transport_id;
         boxcar_description.textContent = current_warehouse_data.description;
         boxcar_cargo_weight.textContent = current_warehouse_data.cargo_weight;
 
-        
+
         boxcar_row.append(boxcar_transport_id);
         boxcar_row.append(boxcar_description);
         boxcar_row.append(boxcar_cargo_weight);
@@ -707,8 +724,8 @@ const generate_all_freight_status_menu = () => {
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
     main_menu_button.addEventListener("click", hide_all_freight_status_manifest);
-    
-   $("#divG").append(main_menu_button);
+
+    $("#divG").append(main_menu_button);
 }
 
 const fill_all_freight_status_manifest = () => {
@@ -718,17 +735,17 @@ const fill_all_freight_status_manifest = () => {
         for (let current_boxcar_data of current_boxcar.cargo_manifest) {
             console.log(current_boxcar_data);
             let boxcar_row = document.createElement("tr");
-    
+
             let boxcar_transport_id = document.createElement("td");
             let boxcar_description = document.createElement("td");
             let boxcar_cargo_weight = document.createElement("td");
             let boxcar_status = document.createElement("td");
-            
+
             boxcar_transport_id.textContent = current_boxcar_data.transport_id;
             boxcar_description.textContent = current_boxcar_data.description;
             boxcar_cargo_weight.textContent = current_boxcar_data.cargo_weight;
             boxcar_status.textContent = "Boxcar";
-    
+
             boxcar_row.append(boxcar_transport_id);
             boxcar_row.append(boxcar_description);
             boxcar_row.append(boxcar_cargo_weight);
@@ -745,12 +762,12 @@ const fill_all_freight_status_manifest = () => {
         let boxcar_description = document.createElement("td");
         let boxcar_cargo_weight = document.createElement("td");
         let boxcar_status = document.createElement("td");
-        
+
         boxcar_transport_id.textContent = current_warehouse_data.transport_id;
         boxcar_description.textContent = current_warehouse_data.description;
         boxcar_cargo_weight.textContent = current_warehouse_data.cargo_weight;
         boxcar_status.textContent = "Warehouse";
-        
+
         boxcar_row.append(boxcar_transport_id);
         boxcar_row.append(boxcar_description);
         boxcar_row.append(boxcar_cargo_weight);
