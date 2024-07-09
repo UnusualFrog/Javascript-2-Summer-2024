@@ -161,7 +161,7 @@ const generate_create_boxcar_menu = () => {
     tare_weight_input.addEventListener("change", validate_new_boxcar_tare_weight);
     tare_weight_input.addEventListener("change", validate_new_boxcar_max_gross_weight);
     tare_weight_span.setAttribute("id", "tare_weight_span");
-    tare_weight_span.textContent = "Must be number in range 0 to 20,000";
+    tare_weight_span.textContent = "Must be number in range 0 to 200,000";
     tare_weight_span.setAttribute("class", "hidden");
 
     tare_weight_data.append(tare_weight_label);
@@ -286,7 +286,7 @@ const validate_new_boxcar_id = () => {
 
 // Validate that tare weight is a numeric value between 0 and 20,000
 const validate_new_boxcar_tare_weight = () => {
-    if (!isNaN($("#tare_weight_id").val()) && parseFloat($("#tare_weight_id").val()) > 0 && parseFloat($("#tare_weight_id").val()) <= 20000) {
+    if (!isNaN($("#tare_weight_id").val()) && parseFloat($("#tare_weight_id").val()) > 0 && parseFloat($("#tare_weight_id").val()) <= 200000) {
         $("#gross_weight_id").val(parseFloat($("#cargo_weight_id").val()) + parseFloat($("#tare_weight_id").val()));
         $("#tare_weight_span").addClass("hidden");
     } else {
@@ -296,7 +296,7 @@ const validate_new_boxcar_tare_weight = () => {
 
 // Validate that max gross weight is a numeric value greater than the tare weight, and between 0 and 20,000
 const validate_new_boxcar_max_gross_weight = () => {
-    if (!isNaN($("#max_gross_weight_id").val()) && (parseFloat($("#max_gross_weight_id").val()) > parseFloat($("#tare_weight_id").val())) && parseFloat($("#max_gross_weight_id").val()) > 0 && parseFloat($("#max_gross_weight_id").val()) <= 20000) {
+    if (!isNaN($("#max_gross_weight_id").val()) && (parseFloat($("#max_gross_weight_id").val()) > parseFloat($("#tare_weight_id").val())) && parseFloat($("#max_gross_weight_id").val()) > 0 && parseFloat($("#max_gross_weight_id").val()) <= 200000) {
         $("#max_gross_weight_span").addClass("hidden");
 
     } else {
@@ -353,10 +353,11 @@ const hide_create_boxcar_menu = () => {
 }
 
 // ------------ Rolling Stock Report Menu Logic ------------ 
-
+// Generate button elements for the "rolling stock report" menu
 const generate_rolling_stock_report_menu = () => {
     let button_row = document.createElement("tr");
 
+    // Return to "create boxcar" menu button
     let return_to_create_data = document.createElement("td");
     let return_to_create_button = document.createElement("input");
     return_to_create_button.setAttribute("type", "button");
@@ -367,6 +368,7 @@ const generate_rolling_stock_report_menu = () => {
     });
     return_to_create_button.addEventListener("click", reset_new_boxcar_form);
 
+    // Return to main menu button
     let main_menu_data = document.createElement("td");
     main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
@@ -374,6 +376,7 @@ const generate_rolling_stock_report_menu = () => {
     main_menu_button.addEventListener("click", hide_create_boxcar_menu);
     main_menu_button.addEventListener("click", reset_new_boxcar_form);
 
+    // Append buttons to page
     return_to_create_data.append(return_to_create_button);
     main_menu_data.append(main_menu_button);
     button_row.append(return_to_create_data);
@@ -381,6 +384,7 @@ const generate_rolling_stock_report_menu = () => {
     $("#divC tfoot").append(button_row);
 }
 
+// Generates and fills the "rolling stock report" table with a row for each existing boxcar in the Railsystem
 const fill_rolling_stock_report = () => {
     $("#divC tbody").empty();
     for (let boxcar_data of CNA_Railsystem.boxcar_list) {
@@ -410,23 +414,30 @@ const fill_rolling_stock_report = () => {
 
         $("#divC tbody").append(new_boxcar_row);
     }
+    // Update total cargo weight
     let total_cargo_weight = CNA_Railsystem.get_total_cargo_weight();
     $("#divC #total_cargo_footer").text(total_cargo_weight);
 }
 
-const show_only_rolling_stock_report = (e) => {
+// Hides the main menu and shows the "rolling stock report" menu independent of the "create new boxcar" menu
+// Updates the "rolling stock report" table
+const show_only_rolling_stock_report = () => {
     $("#divA").addClass("hidden");
     $("#divC").removeClass("hidden");
+    // "Return to create boxcar" button only visible when viewing from "create new boxcar" menu
     $("#return_to_create_boxcar").addClass("hidden");
     fill_rolling_stock_report();
 }
 
+// Hides the "rolling stock report" menu and shows the main menu
 const hide_only_rolling_stock_report = () => {
     $("#divA").removeClass("hidden");
     $("#divC").addClass("hidden");
     $("#return_to_create_boxcar").removeClass("hidden");
 }
 
+// ------------ Rolling Add Freight Menu Logic ------------ 
+// Generate elements for the "add freight" menu
 const generate_add_freight_menu = () => {
     // Selected Boxcar
     let boxcar_selected_row = document.createElement("tr");
@@ -526,23 +537,27 @@ const generate_add_freight_menu = () => {
     button_row = document.createElement("tr");
     button_data = document.createElement("td");
 
-    process_cargo_button = document.createElement("input");
-    process_cargo_button.setAttribute("type", "button");
-    process_cargo_button.setAttribute("value", "Process Cargo");
-    process_cargo_button.addEventListener("click", validate_new_freight_item);
-    process_cargo_button.addEventListener("click", process_new_freight_cargo);
+    // Process new cargo button
+    let process_new_cargo_button = document.createElement("input");
+    process_new_cargo_button.setAttribute("type", "button");
+    process_new_cargo_button.setAttribute("value", "Process Cargo");
+    process_new_cargo_button.addEventListener("click", validate_new_freight_item);
+    process_new_cargo_button.addEventListener("click", process_new_freight_cargo);
 
-    reset_form_button = document.createElement("input");
-    reset_form_button.setAttribute("type", "button");
-    reset_form_button.setAttribute("value", "Reset Form");
-    reset_form_button.addEventListener("click", reset_add_freight_form);
+    // Reset form button
+    let reset_new_freight_form_button = document.createElement("input");
+    reset_new_freight_form_button.setAttribute("type", "button");
+    reset_new_freight_form_button.setAttribute("value", "Reset Form");
+    reset_new_freight_form_button.addEventListener("click", reset_add_freight_form);
 
-    button_data.append(process_cargo_button);
-    button_data.append(reset_form_button);
+    // Append buttons to table
+    button_data.append(process_new_cargo_button);
+    button_data.append(reset_new_freight_form_button);
     button_row.append(button_data);
     $("#entry_section tfoot").append(button_row);
 
-    main_menu_button = document.createElement("input");
+    // Main menu button
+    let main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
     main_menu_button.addEventListener("click", hide_add_freight_menu);
@@ -550,6 +565,7 @@ const generate_add_freight_menu = () => {
     $("#divD").append(main_menu_button);
 }
 
+// Generate and fills the list of currently available boxcars as selectable buttons
 const fill_boxcar_selection_list = () => {
     $("#boxcar_selection tbody").empty();
     for (let current_boxcar_data of CNA_Railsystem.boxcar_list) {
@@ -567,14 +583,17 @@ const fill_boxcar_selection_list = () => {
     }
 }
 
+// Add new freight item to currently selected boxcar if no validation errors
+// Determines if new freight should be added to boxcar or warehouse and adds the item accordingly
 const process_new_freight_cargo = () => {
     if ($("#transport_id_span").attr("class") == "hidden" && $("#description_span").attr("class") && $("#total_cargo_weight_span").attr("class")) {
         let current_boxcar = CNA_Railsystem.boxcar_list.get($("#boxcar_selected").val());
         let new_freight = new Freight_Item($("#transport_id").val(), $("#description").val(), parseFloat($("#total_cargo_weight").val()))
+
         if (parseFloat($("#total_cargo_weight").val()) + current_boxcar.cargo + current_boxcar.tare <= current_boxcar.max_gross) {
+            current_boxcar.add_freight(new_freight);
             current_boxcar.cargo += parseFloat($("#total_cargo_weight").val());
             current_boxcar.gross = current_boxcar.tare + current_boxcar.cargo;
-            current_boxcar.add_freight(new_freight);
             $("#boxcar_or_warehouse_span").addClass("hidden");
             show_boxcar_manifest();
         } else {
@@ -586,12 +605,14 @@ const process_new_freight_cargo = () => {
     }
 }
 
+// Set the selected boxcar based on the button selected by the user
 const set_current_boxcar = (e) => {
     $("#boxcar_selected").val(e.target.value);
     $("#boxcar_selection").attr("disabled", true);
     $("#entry_section").removeAttr("disabled");
 }
 
+// Validates input fields for new freight item
 const validate_new_freight_item = () => {
     // Transport ID
     if ($("#transport_id").val() != "") {
@@ -618,6 +639,7 @@ const validate_new_freight_item = () => {
     }
 }
 
+// Resets the fields for the "add freight" from
 const reset_add_freight_form = () => {
     $("#boxcar_selected").val("");
     $("#transport_id").val("");
@@ -633,12 +655,14 @@ const reset_add_freight_form = () => {
     $("#boxcar_or_warehouse_span").addClass("hidden");
 }
 
+// Displays the "add freight" menu and hides the main menu, updates the boxcar selection list
 const show_add_freight_menu = () => {
     $("#divA").addClass("hidden");
     $("#divD").removeClass("hidden");
     fill_boxcar_selection_list();
 }
 
+// Hides the "add freight" menu, as well as the boxcar and warehouse manifest menus, and displays the main menu
 const hide_add_freight_menu = () => {
     $("#divA").removeClass("hidden");
     $("#divD").addClass("hidden");
@@ -646,6 +670,8 @@ const hide_add_freight_menu = () => {
     hide_warehouse_manifest();
 }
 
+// ------------ Boxcar Manifest Menu Logic ------------ 
+// Generate button elements for the "Boxcar Manifest" menu
 const generate_boxcar_manifest_menu = () => {
     return_to_create_freight_button = document.createElement("input");
     return_to_create_freight_button.setAttribute("type", "button");
@@ -661,6 +687,7 @@ const generate_boxcar_manifest_menu = () => {
     $("#divE").append(main_menu_button);
 }
 
+// Generate and add a row to the "boxcar manifest" menu, for each freight item in the current boxcar
 const fill_current_boxcar_manifest = () => {
     $("#divE tbody").empty();
     let current_boxcar = CNA_Railsystem.boxcar_list.get($("#boxcar_selected").val());
@@ -675,7 +702,6 @@ const fill_current_boxcar_manifest = () => {
         boxcar_description.textContent = current_boxcar_data.description;
         boxcar_cargo_weight.textContent = current_boxcar_data.cargo_weight;
 
-
         boxcar_row.append(boxcar_transport_id);
         boxcar_row.append(boxcar_description);
         boxcar_row.append(boxcar_cargo_weight);
@@ -684,6 +710,7 @@ const fill_current_boxcar_manifest = () => {
     $("#divE #total_cargo_footer").text(current_boxcar.get_total_cargo_weight());
 }
 
+// show the boxcar manifest, set the header to match the boxcar id, and update the boxcar manifest
 const show_boxcar_manifest = () => {
     $("#divE").removeClass("hidden");
     let current_boxcar = $("#boxcar_selected").val();
@@ -691,13 +718,17 @@ const show_boxcar_manifest = () => {
     fill_current_boxcar_manifest();
 }
 
+// Reset the freight form and hide the boxcar manifest
 const hide_boxcar_manifest = () => {
     reset_add_freight_form();
     $("#divE").addClass("hidden");
 
 }
 
+// ------------ Warehouse Manifest Menu Logic ------------ 
+// Generate button elements for the "Warehouse Manifest" menu
 const generate_warehouse_manifest_menu = () => {
+    // Return to create freight button
     return_to_create_freight_button = document.createElement("input");
     return_to_create_freight_button.setAttribute("type", "button");
     return_to_create_freight_button.setAttribute("value", "Return to Create Freight Entry");
@@ -705,6 +736,7 @@ const generate_warehouse_manifest_menu = () => {
     return_to_create_freight_button.addEventListener("click", hide_warehouse_manifest);
     return_to_create_freight_button.addEventListener("click", reset_add_freight_form);
 
+    // Main menu button
     main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
@@ -714,6 +746,7 @@ const generate_warehouse_manifest_menu = () => {
     $("#divF").append(main_menu_button);
 }
 
+// Generate and add a row to the "warehouse manifest" menu, for each freight item in the current boxcar
 const fill_warehouse_manifest = () => {
     $("#divF tbody").empty();
     let warehouse = CNA_Railsystem.warehouse_manifest;
@@ -729,29 +762,35 @@ const fill_warehouse_manifest = () => {
         boxcar_description.textContent = current_warehouse_data.description;
         boxcar_cargo_weight.textContent = current_warehouse_data.cargo_weight;
 
-
         boxcar_row.append(boxcar_transport_id);
         boxcar_row.append(boxcar_description);
         boxcar_row.append(boxcar_cargo_weight);
         $("#divF tbody").append(boxcar_row)
     }
+    // Update total cargo weight
     $("#divF #total_cargo_footer").text(warehouse.get_total_cargo_weight());
 }
 
+// Hide the main menu and show the "warehouse manifest" menu and update the warehouse manifest list
 const show_warehouse_manifest = () => {
+    // Hide the "return to create freight" button if accessing "warehouse manifest" menu from the main menu
     if (!$("#divA").hasClass("hidden")) {
         $("#return_to_create_freight_warehouse").addClass("hidden");
     }
     $("#divF").removeClass("hidden");
     $("#divA").addClass("hidden");
+    
     fill_warehouse_manifest();
 }
 
+// Hide the "warehouse manifest" menu
 const hide_warehouse_manifest = () => {
     $("#divF").addClass("hidden");
     $("#return_to_create_freight_warehouse").removeClass("hidden");
 }
 
+// ------------ All Freight Status Menu Logic ------------ 
+// Generate button elements for the "All Freight Status" menu
 const generate_all_freight_status_menu = () => {
     main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
@@ -761,12 +800,14 @@ const generate_all_freight_status_menu = () => {
     $("#divG").append(main_menu_button);
 }
 
+// Generate and add a row to the "all freight status" menu, for each freight item in each of the boxcar manifests and the warehouse manifest
 const fill_all_freight_status_manifest = () => {
     $("#divG tbody").empty();
+
+    // Boxcar Manifest items
     for (let item of CNA_Railsystem.boxcar_list) {
         let current_boxcar = item[1];
         for (let current_boxcar_data of current_boxcar.cargo_manifest) {
-            console.log(current_boxcar_data);
             let boxcar_row = document.createElement("tr");
 
             let boxcar_transport_id = document.createElement("td");
@@ -777,7 +818,7 @@ const fill_all_freight_status_manifest = () => {
             boxcar_transport_id.textContent = current_boxcar_data.transport_id;
             boxcar_description.textContent = current_boxcar_data.description;
             boxcar_cargo_weight.textContent = current_boxcar_data.cargo_weight;
-            boxcar_status.textContent = "Boxcar";
+            boxcar_status.textContent = current_boxcar.id;
 
             boxcar_row.append(boxcar_transport_id);
             boxcar_row.append(boxcar_description);
@@ -787,6 +828,7 @@ const fill_all_freight_status_manifest = () => {
         }
     }
 
+    // Warehouse Manifest items
     let warehouse = CNA_Railsystem.warehouse_manifest;
     for (let current_warehouse_data of warehouse.cargo_manifest) {
         let boxcar_row = document.createElement("tr");
@@ -809,18 +851,20 @@ const fill_all_freight_status_manifest = () => {
     }
 }
 
+// Hide the main menu, show the "all freight status" menu and update the "all freight status" table
 const show_all_freight_status_manifest = () => {
     $("#divG").removeClass("hidden");
     $("#divA").addClass("hidden");
     fill_all_freight_status_manifest();
 }
 
+// Hide the "all freight status" menu and show the main menu
 const hide_all_freight_status_manifest = () => {
     $("#divG").addClass("hidden");
     $("#divA").removeClass("hidden");
 }
 
-// Global Railsystem variable
+// Global Railsystem variable for managing boxcars and warehouse
 var CNA_Railsystem = new Railsystem();
 
 // Generate base page elements for all menus
