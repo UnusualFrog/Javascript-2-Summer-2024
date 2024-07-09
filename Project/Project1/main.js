@@ -7,12 +7,12 @@ class Railsystem {
         this.warehouse_manifest = new Boxcar("WH000", 0, Number.MAX_VALUE, 0, 0);
     }
 
-    // adds a new boxcar to the system
+    // Adds a new boxcar to the system
     add_boxcar(new_item) {
         this.boxcar_list.set(new_item.id, new_item);
     }
 
-    // calculate the total cargo weight of all boxcars
+    // Calculate the total cargo weight of all boxcars
     get_total_cargo_weight() {
         let total_cargo_weight = 0;
         for (let current_boxcar of this.boxcar_list) {
@@ -21,7 +21,6 @@ class Railsystem {
         }
         return total_cargo_weight;
     }
-
 }
 
 // Boxcar which holds a list of cargo items
@@ -46,11 +45,10 @@ class Boxcar {
                 return 1;
             }
             return 0;
-
         });
     }
 
-    // calculates the total cargo weight of all cargo items in the boxcar
+    // Calculates the total cargo weight of all cargo items in the boxcar
     get_total_cargo_weight() {
         let total_cargo_weight = 0;
         for (let cargo of this.cargo_manifest) {
@@ -103,6 +101,12 @@ const generate_main_menu = () => {
     warehouse_data_row.addEventListener("change", show_warehouse_manifest);
     all_freight_status_row.addEventListener("change", show_all_freight_status_manifest);
 
+    create_boxcar_row.addEventListener("change", turn_off_radio_button);
+    boxcar_data_row.addEventListener("change", turn_off_radio_button);
+    add_freight_row.addEventListener("change", turn_off_radio_button);
+    warehouse_data_row.addEventListener("change", turn_off_radio_button);
+    all_freight_status_row.addEventListener("change", turn_off_radio_button);
+
     $("#divA tbody").append(create_boxcar_row);
     $("#divA tbody").append(add_freight_row);
     $("#divA tbody").append(boxcar_data_row);
@@ -110,10 +114,16 @@ const generate_main_menu = () => {
     $("#divA tbody").append(all_freight_status_row);
 }
 
+// Uncheck radio button after selection
+const turn_off_radio_button = (e) => {
+    e.target.checked = !e.target.checked;
+}
+
 
 // ------------ Create Boxcar Menu Logic ------------ 
-
+// Generates elements for the "create boxcar" menu
 const generate_create_boxcar_menu = () => {
+    // Generate "set of 3" (label, input, span) rows for each field
     // Boxcar ID
     let boxcar_id_row = document.createElement("tr");
     let boxcar_id_data = document.createElement("td");
@@ -125,7 +135,7 @@ const generate_create_boxcar_menu = () => {
     boxcar_id_label.setAttribute("for", "boxcar_id");
     boxcar_id_input.setAttribute("id", "boxcar_id");
     boxcar_id_input.setAttribute("type", "text");
-    boxcar_id_input.addEventListener("change", validate_boxcar_id);
+    boxcar_id_input.addEventListener("change", validate_new_boxcar_id);
     boxcar_id_span.setAttribute("id", "boxcar_id_span");
     boxcar_id_span.textContent = "Must start with BX followed by 3 digits";
     boxcar_id_span.setAttribute("class", "hidden");
@@ -148,8 +158,8 @@ const generate_create_boxcar_menu = () => {
     tare_weight_label.setAttribute("for", "tare_weight_id");
     tare_weight_input.setAttribute("id", "tare_weight_id");
     tare_weight_input.setAttribute("type", "text");
-    tare_weight_input.addEventListener("change", validate_tare_weight);
-    tare_weight_input.addEventListener("change", validate_max_gross_weight);
+    tare_weight_input.addEventListener("change", validate_new_boxcar_tare_weight);
+    tare_weight_input.addEventListener("change", validate_new_boxcar_max_gross_weight);
     tare_weight_span.setAttribute("id", "tare_weight_span");
     tare_weight_span.textContent = "Must be number in range 0 to 20,000";
     tare_weight_span.setAttribute("class", "hidden");
@@ -172,7 +182,7 @@ const generate_create_boxcar_menu = () => {
     max_gross_weight_label.setAttribute("for", "max_gross_weight_id");
     max_gross_weight_input.setAttribute("id", "max_gross_weight_id");
     max_gross_weight_input.setAttribute("type", "text");
-    max_gross_weight_input.addEventListener("change", validate_max_gross_weight);
+    max_gross_weight_input.addEventListener("change", validate_new_boxcar_max_gross_weight);
     max_gross_weight_span.setAttribute("id", "max_gross_weight_span");
     max_gross_weight_span.textContent = "Must be greater than TARE weight and in range 0 to 20,000";
     max_gross_weight_span.setAttribute("class", "hidden");
@@ -232,23 +242,26 @@ const generate_create_boxcar_menu = () => {
 
     $("#divB tbody").append(gross_weight_row);
 
-    // Generate Buttons
+    // Generate Row of Buttons
     button_row = document.createElement("tr");
     button_data = document.createElement("td");
 
+    // Validate and process new boxcar data
     process_boxcar_button = document.createElement("input");
     process_boxcar_button.setAttribute("type", "button");
     process_boxcar_button.setAttribute("value", "Process Boxcar");
-    process_boxcar_button.addEventListener("click", validate_boxcar_id);
-    process_boxcar_button.addEventListener("click", validate_tare_weight);
-    process_boxcar_button.addEventListener("click", validate_max_gross_weight);
+    process_boxcar_button.addEventListener("click", validate_new_boxcar_id);
+    process_boxcar_button.addEventListener("click", validate_new_boxcar_tare_weight);
+    process_boxcar_button.addEventListener("click", validate_new_boxcar_max_gross_weight);
     process_boxcar_button.addEventListener("click", process_new_boxcar);
 
+    // Reset fields
     reset_form_button = document.createElement("input");
     reset_form_button.setAttribute("type", "button");
     reset_form_button.setAttribute("value", "Reset Form");
     reset_form_button.addEventListener("click", reset_new_boxcar_form);
 
+    // Return to main menu
     main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
@@ -262,7 +275,8 @@ const generate_create_boxcar_menu = () => {
     $("#divB tbody").append(button_row);
 }
 
-const validate_boxcar_id = () => {
+// Validate that boxcar ID starts with "BX" and is followed by exactly 3 digits
+const validate_new_boxcar_id = () => {
     if ($("#boxcar_id").val().match(/^BX\d\d\d$/)) {
         $("#boxcar_id_span").addClass("hidden");
     } else {
@@ -270,17 +284,18 @@ const validate_boxcar_id = () => {
     }
 }
 
-const validate_tare_weight = () => {
+// Validate that tare weight is a numeric value between 0 and 20,000
+const validate_new_boxcar_tare_weight = () => {
     if (!isNaN($("#tare_weight_id").val()) && parseFloat($("#tare_weight_id").val()) > 0 && parseFloat($("#tare_weight_id").val()) <= 20000) {
         $("#gross_weight_id").val(parseFloat($("#cargo_weight_id").val()) + parseFloat($("#tare_weight_id").val()));
         $("#tare_weight_span").addClass("hidden");
-
     } else {
         $("#tare_weight_span").removeClass("hidden");
     }
 }
 
-const validate_max_gross_weight = () => {
+// Validate that max gross weight is a numeric value greater than the tare weight, and between 0 and 20,000
+const validate_new_boxcar_max_gross_weight = () => {
     if (!isNaN($("#max_gross_weight_id").val()) && (parseFloat($("#max_gross_weight_id").val()) > parseFloat($("#tare_weight_id").val())) && parseFloat($("#max_gross_weight_id").val()) > 0 && parseFloat($("#max_gross_weight_id").val()) <= 20000) {
         $("#max_gross_weight_span").addClass("hidden");
 
@@ -289,11 +304,9 @@ const validate_max_gross_weight = () => {
     }
 }
 
-// Create new boxcar if valid input
+// If boxcar fields passed validation, create new boxcar using input data and display the rolling stock report menu with the new boxcar added
 const process_new_boxcar = () => {
     if ($("#boxcar_id_span").attr("class") == "hidden" && $("#tare_weight_span").attr("class") == "hidden" && $("#max_gross_weight_span").attr("class") == "hidden") {
-        $("#divC").removeClass("hidden");
-
         let new_boxcar = new Boxcar(
             $("#boxcar_id").val(),
             parseFloat($("#tare_weight_id").val()),
@@ -301,12 +314,14 @@ const process_new_boxcar = () => {
             parseFloat($("#cargo_weight_id").val()),
             parseFloat($("#gross_weight_id").val())
         );
+
         CNA_Railsystem.add_boxcar(new_boxcar);
         fill_rolling_stock_report();
+        $("#divC").removeClass("hidden");
     }
 }
 
-// Reset the new boxcar form fields
+// Reset the new boxcar menu form fields to their inital values
 const reset_new_boxcar_form = () => {
     $("#boxcar_id").val("");
     $("#tare_weight_id").val("");
@@ -317,8 +332,8 @@ const reset_new_boxcar_form = () => {
     $("#max_gross_weight_span").addClass("hidden");
 }
 
-const show_create_boxcar_menu = (e) => {
-    e.target.checked = !e.target.checked;
+// Hide the main menu and show the "create boxcar" menu, update the "rolling stock report" menu and display the menu if there are existing boxcars
+const show_create_boxcar_menu = () => {
     $("#divA").addClass("hidden");
     $("#divB").removeClass("hidden");
     if (CNA_Railsystem.boxcar_list.size == 0) {
@@ -330,6 +345,7 @@ const show_create_boxcar_menu = (e) => {
     fill_rolling_stock_report();
 }
 
+// Hide the "create boxcar" and "rolling stock report" menus and show the main menu
 const hide_create_boxcar_menu = () => {
     $("#divA").removeClass("hidden");
     $("#divB").addClass("hidden");
@@ -399,7 +415,6 @@ const fill_rolling_stock_report = () => {
 }
 
 const show_only_rolling_stock_report = (e) => {
-    e.target.checked = !e.target.checked;
     $("#divA").addClass("hidden");
     $("#divC").removeClass("hidden");
     $("#return_to_create_boxcar").addClass("hidden");
@@ -618,8 +633,7 @@ const reset_add_freight_form = () => {
     $("#boxcar_or_warehouse_span").addClass("hidden");
 }
 
-const show_add_freight_menu = (e) => {
-    e.target.checked = !e.target.checked;
+const show_add_freight_menu = () => {
     $("#divA").addClass("hidden");
     $("#divD").removeClass("hidden");
     fill_boxcar_selection_list();
@@ -724,9 +738,8 @@ const fill_warehouse_manifest = () => {
     $("#divF #total_cargo_footer").text(warehouse.get_total_cargo_weight());
 }
 
-const show_warehouse_manifest = (e) => {
+const show_warehouse_manifest = () => {
     if (!$("#divA").hasClass("hidden")) {
-        e.target.checked = !e.target.checked;
         $("#return_to_create_freight_warehouse").addClass("hidden");
     }
     $("#divF").removeClass("hidden");
@@ -796,8 +809,7 @@ const fill_all_freight_status_manifest = () => {
     }
 }
 
-const show_all_freight_status_manifest = (e) => {
-    e.target.checked = !e.target.checked;
+const show_all_freight_status_manifest = () => {
     $("#divG").removeClass("hidden");
     $("#divA").addClass("hidden");
     fill_all_freight_status_manifest();
