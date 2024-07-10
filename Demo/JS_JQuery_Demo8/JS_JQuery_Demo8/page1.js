@@ -15,7 +15,7 @@ $(document).ready(() => {
 
     // the handler for the click event of the submit button
     $("#order_form").submit(event => {
-        event.preventDefault();
+        // event.preventDefault();
         const itemCode = $("#item_code_id")
         setCookie("aaaa", "bbbb", 1); // 1 day persistent cookie
         $("#message").val("C1");
