@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="index.css">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="main.js"></script>
+        <title>Project 1</title>
+    </head>
+    <body>
+        <div class="container">
+            <div id="divA">
+                <h2>CNA - Rolling Stock - Main Menu</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Select Desired Activity via Radio Button</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+
+            <div id="divB" class="hidden">
+                <h2>CNA - Rolling Stock - Create New Boxcar</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Create New Boxcar</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+
+
+            <div id="divC" class="hidden">
+                <h2>CNA - Rolling Stock Report</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Box Car ID</th>
+                            <th>TARE</th>
+                            <th>Max Gross</th>
+                            <th>Cargo</th>
+                            <th>Gross</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Total Cargo Weight: </td>
+                            <td id="total_cargo_footer">0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div id="divD" class="hidden">
+                <h2>CNA - Rolling Stock - Create Freight Entry</h2>
+                <fieldset id="boxcar_selection">
+                    <h3>Boxcar List</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="2">Boxcar ID</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </fieldset>
+                <fieldset id="entry_section" disabled>
+                    <h3>Freight Entry</h3>
+                    <table>
+                        <thead></thead>
+                        <tbody></tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </fieldset>
+                
+            </div>
+
+            <div id="divE" class="hidden">
+                <h2>CNA - Boxcar <span id="boxcar_manifest_title"></span> Manifest</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transport ID</th>
+                            <th>Description</th>
+                            <th>Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <td></td>
+                        <td>Total Cargo Weight: </td>
+                        <td id="total_cargo_footer">0</td>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div id="divF" class="hidden">
+                <h2>CNA - Warehouse Manifest - Station AAAA</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transport ID</th>
+                            <th>Description</th>
+                            <th>Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <td>Total Cargo Weight: </td>
+                        <td id="total_cargo_footer">0</td>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div id="divG" class="hidden">
+                <h2>CNA - Complete Freight Status</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transport ID</th>
+                            <th>Description</th>
+                            <th>Weight</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+          </div>
+          
+    </body>
+</html>

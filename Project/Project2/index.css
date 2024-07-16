@@ -1,0 +1,28 @@
+table, th, td {
+    border: 1px solid;
+  }
+
+table {
+    border-collapse: collapse;
+}
+td {
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#divC td {
+    text-align: center;
+}
+
+span {
+    color: red;
+}
+
+.hidden {
+    display: none;
+}
+
+#boxcar_manifest_title {
+    color: black;
+}
