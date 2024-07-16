@@ -363,7 +363,7 @@ const process_new_boxcar = () => {
             parseFloat($("#gross_weight_id").val())
         );
 
-        CNA_Railsystem.add_boxcar(new_boxcar);
+        CNA_Railsystem.train.add_boxcar(new_boxcar);
         fill_rolling_stock_report();
         $("#divC").removeClass("hidden");
     }
@@ -384,7 +384,7 @@ const reset_new_boxcar_form = () => {
 const show_create_boxcar_menu = () => {
     $("#divA").addClass("hidden");
     $("#divB").removeClass("hidden");
-    if (CNA_Railsystem.boxcar_list.size == 0) {
+    if (CNA_Railsystem.train.boxcar_list.size == 0) {
         $("#divC").addClass("hidden");
     } else {
         $("#divC").removeClass("hidden");
@@ -435,7 +435,7 @@ const generate_rolling_stock_report_menu = () => {
 // Generates and fills the "rolling stock report" table with a row for each existing boxcar in the Railsystem
 const fill_rolling_stock_report = () => {
     $("#divC tbody").empty();
-    for (let boxcar_data of CNA_Railsystem.boxcar_list) {
+    for (let boxcar_data of CNA_Railsystem.train.boxcar_list) {
         let boxcar = boxcar_data[1];
         let new_boxcar_row = document.createElement("tr");
 
@@ -463,7 +463,7 @@ const fill_rolling_stock_report = () => {
         $("#divC tbody").append(new_boxcar_row);
     }
     // Update total cargo weight
-    let total_cargo_weight = CNA_Railsystem.get_total_cargo_weight();
+    let total_cargo_weight = CNA_Railsystem.train.get_total_cargo_weight();
     $("#divC #total_cargo_footer").text(total_cargo_weight);
 }
 
@@ -616,7 +616,7 @@ const generate_add_freight_menu = () => {
 // Generate and fills the list of currently available boxcars as selectable buttons
 const fill_boxcar_selection_list = () => {
     $("#boxcar_selection tbody").empty();
-    for (let current_boxcar_data of CNA_Railsystem.boxcar_list) {
+    for (let current_boxcar_data of CNA_Railsystem.train.boxcar_list) {
         let boxcar = current_boxcar_data[1];
         let boxcar_row = document.createElement("tr");
         let boxcar_data = document.createElement("td");
@@ -635,7 +635,7 @@ const fill_boxcar_selection_list = () => {
 // Determines if new freight should be added to boxcar or warehouse and adds the item accordingly
 const process_new_freight_cargo = () => {
     if ($("#transport_id_span").attr("class") == "hidden" && $("#description_span").attr("class") && $("#total_cargo_weight_span").attr("class")) {
-        let current_boxcar = CNA_Railsystem.boxcar_list.get($("#boxcar_selected").val());
+        let current_boxcar = CNA_Railsystem.train.boxcar_list.get($("#boxcar_selected").val());
         let new_freight = new Freight_Item($("#transport_id").val(), $("#description").val(), parseFloat($("#total_cargo_weight").val()))
 
         if (parseFloat($("#total_cargo_weight").val()) + current_boxcar.cargo + current_boxcar.tare <= current_boxcar.max_gross) {
@@ -645,7 +645,7 @@ const process_new_freight_cargo = () => {
             $("#boxcar_or_warehouse_span").addClass("hidden");
             show_boxcar_manifest();
         } else {
-            CNA_Railsystem.warehouse_manifest.add_freight(new_freight);
+            CNA_Railsystem.train.current_station.warehouse.add_freight(new_freight);
             $("#boxcar_or_warehouse_span").removeClass("hidden");
             show_warehouse_manifest();
         }
@@ -738,7 +738,7 @@ const generate_boxcar_manifest_menu = () => {
 // Generate and add a row to the "boxcar manifest" menu, for each freight item in the current boxcar
 const fill_current_boxcar_manifest = () => {
     $("#divE tbody").empty();
-    let current_boxcar = CNA_Railsystem.boxcar_list.get($("#boxcar_selected").val());
+    let current_boxcar = CNA_Railsystem.train.boxcar_list.get($("#boxcar_selected").val());
     for (let current_boxcar_data of current_boxcar.cargo_manifest) {
         let boxcar_row = document.createElement("tr");
 
@@ -797,9 +797,9 @@ const generate_warehouse_manifest_menu = () => {
 // Generate and add a row to the "warehouse manifest" menu, for each freight item in the current boxcar
 const fill_warehouse_manifest = () => {
     $("#divF tbody").empty();
-    let warehouse = CNA_Railsystem.warehouse_manifest;
+    let warehouse = CNA_Railsystem.train.current_station.warehouse;
 
-    for (let current_warehouse_data of warehouse.cargo_manifest) {
+    for (let current_warehouse_data of warehouse.warehouse_manifest) {
         let boxcar_row = document.createElement("tr");
 
         let boxcar_transport_id = document.createElement("td");
@@ -829,6 +829,7 @@ const show_warehouse_manifest = () => {
     $("#divA").addClass("hidden");
     
     fill_warehouse_manifest();
+    $("#station_id").val(CNA_Railsystem.train.current_station.station_ID);
 }
 
 // Hide the "warehouse manifest" menu
@@ -853,7 +854,7 @@ const fill_all_freight_status_manifest = () => {
     $("#divG tbody").empty();
 
     // Boxcar Manifest items
-    for (let item of CNA_Railsystem.boxcar_list) {
+    for (let item of CNA_Railsystem.train.boxcar_list) {
         let current_boxcar = item[1];
         for (let current_boxcar_data of current_boxcar.cargo_manifest) {
             let boxcar_row = document.createElement("tr");
@@ -877,7 +878,7 @@ const fill_all_freight_status_manifest = () => {
     }
 
     // Warehouse Manifest items
-    let warehouse = CNA_Railsystem.warehouse_manifest;
+    let warehouse = CNA_Railsystem.train.current_station.warehouse;
     for (let current_warehouse_data of warehouse.cargo_manifest) {
         let boxcar_row = document.createElement("tr");
 
