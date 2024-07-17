@@ -1,19 +1,17 @@
 // Railsystem which contains stations and the train
 class Railsystem {
     constructor() {
-        this.station1 = new Station("S1");
-        this.station2 = new Station("S2");
-        this.station3 = new Station("S3");
-        this.station4 = new Station("S4");
-        this.train = new Train(this.station1);
+        this.station_list = [new Station("S1", 0), new Station("S2", 1), new Station("S3", 2), new Station("S4", 3)];
+        this.train = new Train(this.station_list[0]);
     }
 }
 
 // Station with a warehouse
 class Station {
-    constructor(station_ID) {
+    constructor(station_ID, index) {
         this.station_ID = station_ID;
-        this.warehouse = new Warehouse();
+        this.warehouse = new Warehouse(station_ID);
+        this.station_index = index;
     }
 }
 
@@ -39,11 +37,20 @@ class Train {
         }
         return total_cargo_weight;
     }
+
+    next_station() {
+        if (this.current_station != CNA_Railsystem.station_list.slice(-1)[0]) {
+            this.current_station = CNA_Railsystem.station_list[this.current_station.station_index+1]
+        } else {
+            this.current_station = CNA_Railsystem.station_list[0]
+        }
+    }
 }
 
 // Warehouse which contains freight items
 class Warehouse {
-    constructor() {
+    constructor(id) {
+        this.id = id;
         this.warehouse_manifest = [];
     }
 
@@ -160,11 +167,19 @@ const generate_main_menu = () => {
     $("#divA tbody").append(boxcar_data_row);
     $("#divA tbody").append(warehouse_data_row);
     $("#divA tbody").append(all_freight_status_row);
+
+    $("#advance_day_button").click(advance_day);
 }
 
 // Uncheck radio button after selection
 const turn_off_radio_button = (e) => {
     e.target.checked = !e.target.checked;
+}
+
+const advance_day = () => {
+    current_day = current_day + 1;
+    $("#current_day").val(current_day);
+    CNA_Railsystem.train.next_station();
 }
 
 
@@ -775,7 +790,63 @@ const hide_boxcar_manifest = () => {
 
 // ------------ Warehouse Manifest Menu Logic ------------ 
 // Generate button elements for the "Warehouse Manifest" menu
+const generate_warehouse_manifest = (id) => {
+    var mainContainer = document.createElement('div');
+    mainContainer.setAttribute("id", "warehouse_" + id);
+
+    // Create and append the heading
+    var heading = document.createElement('h2');
+    heading.textContent = 'CNA - Warehouse Manifest - Station ';
+
+    var span = document.createElement('span');
+    span.setAttribute('id', 'station_id');
+    span.textContent = id;
+    heading.append(span);
+    mainContainer.append(heading);
+
+    var table = document.createElement('table');
+    mainContainer.append(table);
+
+    var thead = document.createElement('thead');
+    table.append(thead);
+
+    var headerRow = document.createElement('tr');
+    thead.append(headerRow);
+
+    var headers = ['Transport ID', 'Description', 'Weight'];
+    headers.forEach(function(headerText) {
+        var th = document.createElement('th');
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+    });
+
+    var tbody = document.createElement('tbody');
+    table.append(tbody);
+
+    var tfoot = document.createElement('tfoot');
+    table.append(tfoot);
+
+    var footerRow = document.createElement('tr');
+    tfoot.append(footerRow);
+
+    var totalWeightLabelCell = document.createElement('td');
+    totalWeightLabelCell.textContent = 'Total Cargo Weight: ';
+    footerRow.append(totalWeightLabelCell);
+
+    var totalWeightValueCell = document.createElement('td');
+    totalWeightValueCell.setAttribute('id', 'total_cargo_footer');
+    totalWeightValueCell.textContent = '0';
+    footerRow.append(totalWeightValueCell);
+
+    return mainContainer;
+}
+
 const generate_warehouse_manifest_menu = () => {
+    for (let station of CNA_Railsystem.station_list) {
+        let manifest = generate_warehouse_manifest(station.station_ID);
+        $("#divF").append(manifest);
+    }
+    
     // Return to create freight button
     return_to_create_freight_button = document.createElement("input");
     return_to_create_freight_button.setAttribute("type", "button");
@@ -790,6 +861,7 @@ const generate_warehouse_manifest_menu = () => {
     main_menu_button.setAttribute("value", "Return to Main Page");
     main_menu_button.addEventListener("click", hide_add_freight_menu);
 
+    
     $("#divF").append(return_to_create_freight_button);
     $("#divF").append(main_menu_button);
 }
@@ -797,26 +869,28 @@ const generate_warehouse_manifest_menu = () => {
 // Generate and add a row to the "warehouse manifest" menu, for each freight item in the current boxcar
 const fill_warehouse_manifest = () => {
     $("#divF tbody").empty();
-    let warehouse = CNA_Railsystem.train.current_station.warehouse;
+    for(let station of CNA_Railsystem.station_list) {    
+        let warehouse = station.warehouse;
 
-    for (let current_warehouse_data of warehouse.warehouse_manifest) {
-        let boxcar_row = document.createElement("tr");
+        for (let current_warehouse_data of warehouse.warehouse_manifest) {
+            let boxcar_row = document.createElement("tr");
 
-        let boxcar_transport_id = document.createElement("td");
-        let boxcar_description = document.createElement("td");
-        let boxcar_cargo_weight = document.createElement("td");
+            let boxcar_transport_id = document.createElement("td");
+            let boxcar_description = document.createElement("td");
+            let boxcar_cargo_weight = document.createElement("td");
 
-        boxcar_transport_id.textContent = current_warehouse_data.transport_id;
-        boxcar_description.textContent = current_warehouse_data.description;
-        boxcar_cargo_weight.textContent = current_warehouse_data.cargo_weight;
+            boxcar_transport_id.textContent = current_warehouse_data.transport_id;
+            boxcar_description.textContent = current_warehouse_data.description;
+            boxcar_cargo_weight.textContent = current_warehouse_data.cargo_weight;
 
-        boxcar_row.append(boxcar_transport_id);
-        boxcar_row.append(boxcar_description);
-        boxcar_row.append(boxcar_cargo_weight);
-        $("#divF tbody").append(boxcar_row)
+            boxcar_row.append(boxcar_transport_id);
+            boxcar_row.append(boxcar_description);
+            boxcar_row.append(boxcar_cargo_weight);
+            $("#warehouse_" + station.station_ID + " tbody").append(boxcar_row)
+        }
+        // Update total cargo weight
+        $("#warehouse_" + station.station_ID + " #total_cargo_footer").text(warehouse.get_total_cargo_weight());
     }
-    // Update total cargo weight
-    $("#divF #total_cargo_footer").text(warehouse.get_total_cargo_weight());
 }
 
 // Hide the main menu and show the "warehouse manifest" menu and update the warehouse manifest list
@@ -829,7 +903,7 @@ const show_warehouse_manifest = () => {
     $("#divA").addClass("hidden");
     
     fill_warehouse_manifest();
-    $("#station_id").val(CNA_Railsystem.train.current_station.station_ID);
+    $("#station_id").text(CNA_Railsystem.train.current_station.station_ID);
 }
 
 // Hide the "warehouse manifest" menu
@@ -878,26 +952,29 @@ const fill_all_freight_status_manifest = () => {
     }
 
     // Warehouse Manifest items
-    let warehouse = CNA_Railsystem.train.current_station.warehouse;
-    for (let current_warehouse_data of warehouse.cargo_manifest) {
-        let boxcar_row = document.createElement("tr");
+    for (let station of CNA_Railsystem.station_list) {
+        let warehouse = station.warehouse;
+        for (let current_warehouse_data of warehouse.warehouse_manifest) {
+            let boxcar_row = document.createElement("tr");
 
-        let boxcar_transport_id = document.createElement("td");
-        let boxcar_description = document.createElement("td");
-        let boxcar_cargo_weight = document.createElement("td");
-        let boxcar_status = document.createElement("td");
+            let boxcar_transport_id = document.createElement("td");
+            let boxcar_description = document.createElement("td");
+            let boxcar_cargo_weight = document.createElement("td");
+            let boxcar_status = document.createElement("td");
 
-        boxcar_transport_id.textContent = current_warehouse_data.transport_id;
-        boxcar_description.textContent = current_warehouse_data.description;
-        boxcar_cargo_weight.textContent = current_warehouse_data.cargo_weight;
-        boxcar_status.textContent = "Warehouse";
+            boxcar_transport_id.textContent = current_warehouse_data.transport_id;
+            boxcar_description.textContent = current_warehouse_data.description;
+            boxcar_cargo_weight.textContent = current_warehouse_data.cargo_weight;
+            boxcar_status.textContent = "Warehouse " + warehouse.id;
 
-        boxcar_row.append(boxcar_transport_id);
-        boxcar_row.append(boxcar_description);
-        boxcar_row.append(boxcar_cargo_weight);
-        boxcar_row.append(boxcar_status);
-        $("#divG tbody").append(boxcar_row)
+            boxcar_row.append(boxcar_transport_id);
+            boxcar_row.append(boxcar_description);
+            boxcar_row.append(boxcar_cargo_weight);
+            boxcar_row.append(boxcar_status);
+            $("#divG tbody").append(boxcar_row)
     }
+    }
+    
 }
 
 // Hide the main menu, show the "all freight status" menu and update the "all freight status" table
@@ -915,6 +992,7 @@ const hide_all_freight_status_manifest = () => {
 
 // Global Railsystem variable for managing boxcars and warehouse
 var CNA_Railsystem = new Railsystem();
+var current_day = 1;
 
 // Generate base page elements for all menus
 $(document).ready(() => {

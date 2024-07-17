@@ -14,6 +14,14 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>Day: <input id="current_day" type="text" value="1"></th>
+                            <th><input type="button" value="ADVANCE DAY -  Move Train" id="advance_day_button"></th>
+                        </tr>
+                    </thead>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
                             <th colspan="2">Select Desired Activity via Radio Button</th>
                         </tr>
                     </thead>
@@ -63,7 +71,7 @@
             <div id="divD" class="hidden">
                 <h2>CNA - Rolling Stock - Create Freight Entry</h2>
                 <fieldset id="boxcar_selection">
-                    <h3>Boxcar List</h3>
+                    <legend>Boxcar List</legend>
                     <table>
                         <thead>
                             <tr>
@@ -74,14 +82,16 @@
                         <tfoot></tfoot>
                     </table>
                 </fieldset>
+                <br>
                 <fieldset id="entry_section" disabled>
-                    <h3>Freight Entry</h3>
+                    <legend>Freight Entry</legend>
                     <table>
                         <thead></thead>
                         <tbody></tbody>
                         <tfoot></tfoot>
                     </table>
                 </fieldset>
+                <br>
                 
             </div>
 
@@ -105,21 +115,6 @@
             </div>
 
             <div id="divF" class="hidden">
-                <h2>CNA - Warehouse Manifest - Station <span></span id="station_id"><span></h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Transport ID</th>
-                            <th>Description</th>
-                            <th>Weight</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                        <td>Total Cargo Weight: </td>
-                        <td id="total_cargo_footer">0</td>
-                    </tfoot>
-                </table>
             </div>
 
             <div id="divG" class="hidden">
