@@ -538,7 +538,7 @@ const generate_add_freight_menu = () => {
     transport_id_input.setAttribute("id", "transport_id");
     transport_id_input.setAttribute("type", "text");
     transport_id_span.setAttribute("id", "transport_id_span");
-    transport_id_span.textContent = "Transport ID must not be blank";
+    transport_id_span.textContent = "Invalid Transport ID format";
     transport_id_span.setAttribute("class", "hidden");
     boxcar_or_warehouse_span.setAttribute("id", "boxcar_or_warehouse_span");
     boxcar_or_warehouse_span.textContent = "Cargo exceeded max-gross weight of boxcar, diverted to Warehouse";
@@ -678,7 +678,8 @@ const set_current_boxcar = (e) => {
 // Validates input fields for new freight item
 const validate_new_freight_item = () => {
     // Transport ID
-    if ($("#transport_id").val() != "") {
+    let pattern = /^[A-Z]{3}\d{4}S(01|02|03|04)$/g;
+    if (pattern.test($("#transport_id").val())) {
         $("#transport_id_span").addClass("hidden");
 
     } else {
