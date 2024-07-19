@@ -4,6 +4,16 @@ class Railsystem {
         this.station_list = [new Station("S1", 0), new Station("S2", 1), new Station("S3", 2), new Station("S4", 3)];
         this.train = new Train(this.station_list[0]);
     }
+
+    // Calculate the total cargo weight of all warehouses
+    get_total_warehouse_cargo_weight() {
+        let total_cargo_weight = 0;
+        for (let current_station of this.station_list) {
+            let current_warehouse = current_station.warehouse;
+            total_cargo_weight += current_warehouse.get_total_cargo_weight();
+        }
+        return total_cargo_weight;
+    }
 }
 
 // Station with a warehouse
@@ -149,24 +159,32 @@ const generate_main_menu = () => {
     let boxcar_data_row = generate_menu_option("boxcar_data", "Boxcar Data");
     let warehouse_data_row = generate_menu_option("warehouse_data", "Warehouse Data");
     let all_freight_status_row = generate_menu_option("all_freight_status", "All Freight Status");
+    let system_summary = generate_menu_option("system_summary", "System Summary");
 
     create_boxcar_row.addEventListener("change", show_create_boxcar_menu);
     boxcar_data_row.addEventListener("change", show_only_rolling_stock_report);
     add_freight_row.addEventListener("change", show_add_freight_menu);
     warehouse_data_row.addEventListener("change", show_warehouse_manifest);
     all_freight_status_row.addEventListener("change", show_all_freight_status_manifest);
+    system_summary.addEventListener("change", show_system_summary);
+    system_summary.addEventListener("change", () => {
+        set_cookie("total_boxcar_weight", CNA_Railsystem.train.get_total_cargo_weight(), 1);
+        set_cookie("total_warehouse_weight", CNA_Railsystem.get_total_warehouse_cargo_weight(), 1);
+    });
 
     create_boxcar_row.addEventListener("change", turn_off_radio_button);
     boxcar_data_row.addEventListener("change", turn_off_radio_button);
     add_freight_row.addEventListener("change", turn_off_radio_button);
     warehouse_data_row.addEventListener("change", turn_off_radio_button);
     all_freight_status_row.addEventListener("change", turn_off_radio_button);
+    system_summary.addEventListener("change", turn_off_radio_button);
 
     $("#divA tbody").append(create_boxcar_row);
     $("#divA tbody").append(add_freight_row);
     $("#divA tbody").append(boxcar_data_row);
     $("#divA tbody").append(warehouse_data_row);
     $("#divA tbody").append(all_freight_status_row);
+    $("#divA tbody").append(system_summary);
 
     $("#advance_day_button").click(advance_day);
 }
@@ -436,6 +454,7 @@ const generate_rolling_stock_report_menu = () => {
     main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
+    main_menu_button.setAttribute("id", "main_menu_rolling_stock");
     main_menu_button.addEventListener("click", hide_create_boxcar_menu);
     main_menu_button.addEventListener("click", reset_new_boxcar_form);
 
@@ -869,6 +888,7 @@ const generate_warehouse_manifest_menu = () => {
     main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
+    main_menu_button.setAttribute("id", "main_menu_warehouse");
     main_menu_button.addEventListener("click", hide_add_freight_menu);
 
     
@@ -915,6 +935,8 @@ const show_warehouse_manifest = () => {
     // Hide the "return to create freight" button if accessing "warehouse manifest" menu from the main menu
     if (!$("#divA").hasClass("hidden")) {
         $("#return_to_create_freight_warehouse").addClass("hidden");
+    } else {
+        $("#main_menu_warehouse").addClass("hidden");
     }
     $("#divF").removeClass("hidden");
     $("#divA").addClass("hidden");
@@ -927,12 +949,13 @@ const show_warehouse_manifest = () => {
 const hide_warehouse_manifest = () => {
     $("#divF").addClass("hidden");
     $("#return_to_create_freight_warehouse").removeClass("hidden");
+    $("#main_menu_warehouse").removeClass("hidden");
 }
 
 // ------------ All Freight Status Menu Logic ------------ 
 // Generate button elements for the "All Freight Status" menu
 const generate_all_freight_status_menu = () => {
-    main_menu_button = document.createElement("input");
+    let main_menu_button = document.createElement("input");
     main_menu_button.setAttribute("type", "button");
     main_menu_button.setAttribute("value", "Return to Main Page");
     main_menu_button.addEventListener("click", hide_all_freight_status_manifest);
@@ -1007,6 +1030,104 @@ const hide_all_freight_status_manifest = () => {
     $("#divA").removeClass("hidden");
 }
 
+// ------------ System Summary Logic ------------ 
+const generate_system_summary = () => {
+    const boxcar_weight_lbl = document.createElement('label');
+    boxcar_weight_lbl.textContent = "Total Weight in Boxcars";
+    const boxcar_weight_input = document.createElement('input');
+    boxcar_weight_input.setAttribute('type', 'text');
+    boxcar_weight_input.setAttribute('id', 'boxcar_weight_total');
+    boxcar_weight_input.setAttribute('readonly', true);
+    const br1 = document.createElement('br');
+
+    // Append the first set to the body
+    $('#summary_page').append(boxcar_weight_lbl, boxcar_weight_input, br1);
+
+    // Create the second label and input
+    const warehouse_weight_lbl = document.createElement('label');
+    warehouse_weight_lbl.textContent = "Total Weight in Warehouses";
+    const warehouse_weight_input = document.createElement('input');
+    warehouse_weight_input.setAttribute('type', 'text');
+    warehouse_weight_input.setAttribute('id', 'warehouse_weight_total');
+    warehouse_weight_input.setAttribute('readonly', true);
+    const br2 = document.createElement('br');
+
+    // Append the second set to the body
+    $('#summary_page').append(warehouse_weight_lbl, warehouse_weight_input, br2);
+
+    // Create the third label and input
+    const total_weight_lbl = document.createElement('label');
+    total_weight_lbl.textContent = "CNA Railsystem Total Weight";
+    const total_weight_input = document.createElement('input');
+    total_weight_input.setAttribute('type', 'text');
+    total_weight_input.setAttribute('id', 'total_weight');
+    total_weight_input.setAttribute('readonly', true);
+    const br3 = document.createElement('br');
+
+    // Append the third set to the body
+    $('#summary_page').append(total_weight_lbl, total_weight_input, br3);
+
+    let main_menu_button = document.createElement("input");
+    main_menu_button.setAttribute("type", "button");
+    main_menu_button.setAttribute("value", "Return to Main Page");
+    main_menu_button.addEventListener("click", hide_system_summary);
+    $('#summary_page').append(main_menu_button);
+}
+
+// Set cookie values
+const set_cookie = (name, value, days) => {
+    let cookie = name + "=" + encodeURIComponent(value);
+    if (days) {
+        cookie += "; max-age=" + days * 24 * 60 * 60;
+    }
+    cookie += "; path=/";
+    document.cookie = cookie;
+}
+
+// Get cookie value
+const getCookieByName = name => {
+    const cookies = document.cookie;
+    // get the starting index of the cookie name followed by an equals sign
+    let start = cookies.indexOf(name + "=");
+ 
+    if (start === -1) { // no cookie with that name
+        return "";
+    } 
+    else {
+        // ajust so the name and equals sign aren't included in the result
+        start = start + (name.length + 1);
+
+        // get the index of the semi-colon at the end of the cookie value
+        let end = cookies.indexOf(";", start);
+        if (end === -1) { // if no semicolon - last cookie
+            end = cookies.length;
+        }
+
+        // use the start and end indexes to get the cookie value
+        const cookieValue = cookies.substring(start, end);
+
+        // return the decoded cookie value
+        return decodeURIComponent(cookieValue);
+    }
+};
+
+const display_cookie_values = () => {
+    $("#boxcar_weight_total").val(getCookieByName("total_boxcar_weight"));
+    $("#warehouse_weight_total").val(getCookieByName("total_warehouse_weight"));
+    $("#total_weight").val(parseFloat(getCookieByName("total_boxcar_weight")) + parseFloat(getCookieByName("total_warehouse_weight")));
+}
+
+// display summary page
+const show_system_summary = () => {
+    window.location.href="http://127.0.0.1:8080/summary";
+    
+}
+
+// hide summary page and show main menu
+const hide_system_summary = () => {
+    window.location.href="http://127.0.0.1:8080";
+}
+
 // Global Railsystem variable for managing boxcars and warehouse
 var CNA_Railsystem = new Railsystem();
 var current_day = 1;
@@ -1020,4 +1141,6 @@ $(document).ready(() => {
     generate_boxcar_manifest_menu();
     generate_warehouse_manifest_menu();
     generate_all_freight_status_menu();
+    generate_system_summary();
+    display_cookie_values();
 });
