@@ -1,7 +1,7 @@
 // Railsystem which contains stations and the train
 class Railsystem {
     constructor() {
-        this.station_list = [new Station("S1", 0), new Station("S2", 1), new Station("S3", 2), new Station("S4", 3)];
+        this.station_list = [new Station("S01", 0), new Station("S02", 1), new Station("S03", 2), new Station("S04", 3)];
         this.train = new Train(this.station_list[0]);
     }
 
@@ -48,11 +48,40 @@ class Train {
         return total_cargo_weight;
     }
 
+    // Logic for moving the train to the next station
     next_station() {
-        if (this.current_station != CNA_Railsystem.station_list.slice(-1)[0]) {
+        if (this.current_station.station_ID != "S04") {
+            // Increment station until final station (station 4) is reached
             this.current_station = CNA_Railsystem.station_list[this.current_station.station_index+1]
-        } else {
-            this.current_station = CNA_Railsystem.station_list[0]
+            this.transfer_cargo_to_warehouse(this.current_station.station_ID);
+        } else if (current_day == 5) {
+            // Cargo at station 4 for more than one day so transfer all cargo to warehouse
+            this.transfer_all_cargo_to_warehouse();
+        }
+    }
+
+    // Add cargo to current warehouse if its transport id matches the station id
+    transfer_cargo_to_warehouse(station_id) {
+        for (let boxcar of CNA_Railsystem.train.boxcar_list) {
+            let boxcar_data = boxcar[1];
+            for (let cargo_item of boxcar_data.cargo_manifest) {
+                let station_snippet = cargo_item.transport_id.substring(cargo_item.transport_id.indexOf("S0"));
+                if (station_snippet == station_id) {
+                    CNA_Railsystem.train.current_station.warehouse.add_freight(cargo_item);
+                    boxcar_data.delete_freight(cargo_item.transport_id);
+                }
+            }
+        }
+    }
+
+    // Add cargo to current warehouse
+    transfer_all_cargo_to_warehouse() {
+        for (let boxcar of CNA_Railsystem.train.boxcar_list) {
+            let boxcar_data = boxcar[1];
+            for (let cargo_item of boxcar_data.cargo_manifest) {
+                CNA_Railsystem.train.current_station.warehouse.add_freight(cargo_item);
+                boxcar_data.delete_freight(cargo_item.transport_id);
+            }
         }
     }
 }
@@ -102,6 +131,22 @@ class Boxcar {
     // Adds a cargo item to the boxcar and sorts the cargo items alphabetically based on the item's transport id
     add_freight(new_item) {
         this.cargo_manifest.push(new_item);
+        this.cargo_manifest.sort((a, b) => {
+            if (a.transport_id < b.transport_id) {
+                return -1;
+            }
+            if (a.transport_id > b.transport_id) {
+                return 1;
+            }
+            return 0;
+        });
+    }
+
+    // Remove a freight item from the boxcar and re-sort
+    delete_freight(transport_id) {
+        this.cargo_manifest = this.cargo_manifest.filter((obj) => {
+            return obj.transport_id != transport_id;
+        })
         this.cargo_manifest.sort((a, b) => {
             if (a.transport_id < b.transport_id) {
                 return -1;
@@ -194,6 +239,7 @@ const turn_off_radio_button = (e) => {
     e.target.checked = !e.target.checked;
 }
 
+// Increase day counter and move to next station if possible
 const advance_day = () => {
     current_day = current_day + 1;
     $("#current_day").val(current_day);
@@ -1111,6 +1157,7 @@ const getCookieByName = name => {
     }
 };
 
+// Displays values stored in cookies on summary page
 const display_cookie_values = () => {
     $("#boxcar_weight_total").val(getCookieByName("total_boxcar_weight"));
     $("#warehouse_weight_total").val(getCookieByName("total_warehouse_weight"));
