@@ -18,6 +18,7 @@ class PaintTin {
 }
 
 const processPurchase = (paintCode, colourSelected) => {
+    let paintTin = new PaintTin();
     paintTin.setCode = paintCode;
     paintTin.color = colourSelected;
 

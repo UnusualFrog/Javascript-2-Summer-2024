@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Station Control</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h2>Draft Sketch</h2>
+    <form action="#" method="post">
+        <fieldset>
+            <legend>TRAIN</legend>
+
+            <div id="location">
+                <label>Location:</label><br>
+                <input type="radio" id="st-johns" name="location" value="St. John's">
+                <label for="st-johns">St. John's</label><br>
+
+                <input type="radio" id="gander" name="location" value="Gander">
+                <label for="gander">Gander</label><br>
+
+                <input type="radio" id="corner-brook" name="location" value="Corner Brook">
+                <label for="corner-brook">Corner Brook</label><br><br>
+            </div>
+            
+            <div id="speed">
+                <label>Speed:</label><br>
+                <input type="radio" id="stopped" name="speed" value="Stopped">
+                <label for="stopped">Stopped</label><br>
+
+                <input type="radio" id="slow" name="speed" value="Slow">
+                <label for="slow">Slow</label><br>
+
+                <input type="radio" id="fast" name="speed" value="Fast">
+                <label for="fast">Fast</label><br><br>
+            </div>
+            
+
+            <button type="submit">Send Data to Station</button>
+        </fieldset>
+    </form>
+
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

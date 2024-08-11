@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Total</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>TRAIN</h2>
+        <label for="inventory">Inventory</label><br>
+        <textarea id="inventory" readonly>
+            Bars 2.95
+            Chips 3.95
+            Cookies 5.95
+            Batteries 9.95
+            Detergent 12.95
+            Apple 20.99
+        </textarea><br>
+        <button type="button">Calculate Total</button>
+        <input type="text" id="total" value="" readonly>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>

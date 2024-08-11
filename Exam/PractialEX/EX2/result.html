@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Station</title>
+    <style>
+        .container {
+            border: 2px solid black;
+            width: 300px;
+            padding: 20px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            width: 150px;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Train Station</h2>
+        <form action="#" method="post">
+            <div>
+                <label for="train-location">Train Location</label>
+                <input type="text" id="train-location" name="train-location" value=""><br><br>
+            </div>
+            <div>
+                <label for="train-speed">Train Speed</label>
+                <input type="text" id="train-speed" name="train-speed" value=""><br><br>
+            </div>
+        </form>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
